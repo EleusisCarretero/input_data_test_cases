@@ -32,7 +32,7 @@ class EcommerceDataTC(MysqlApi):
             return self.format_response({'message': "You just can choose id or name, not both"})
         elif id:
             try:
-                x = int(id)
+                int(id)
             except ValueError:
                 return self.format_response({'message': "ID should be an integer"})
         elif name:

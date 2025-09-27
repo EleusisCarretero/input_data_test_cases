@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "input_data_test_cases"
+version = "1.0.0"
+description = "API library to make connection with databases to manage input params"
+authors = [{ name = "Raúl Eleusis", email = "eleusis.carretero@gmail.com" }]
+readme = "README.md"
+license = { text = "MIT" }
+dependencies = [
+    "flask",
+    "flask_mysqldb",
+    "setuptools",
+]
+
+[project.optional-dependencies]
+dev = [
+  "flask",
+  "flask_mysqldb",
+  "setuptools"
+]

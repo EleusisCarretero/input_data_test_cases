@@ -37,3 +37,30 @@ class TestEcommerceDataTC(unittest.TestCase):
             patch_connect_db.reset_mock()
             patch_queries.reset_mock()
 
+    @patch.object(EcommerceDataTC, "format_response")
+    @patch.object(EcommerceDataTC, "define_queries")
+    @patch.object(EcommerceDataTC, "connect_data_base")
+    def test_get_test_case_valid_requests(self, patch_connect_db, patch_queries,patch_format):
+        endpoint_response = {
+            '/test_case?id=1': {'params': [{'timeout': 2}]},
+            '/test_case?name=test_timeout': {'params': [{'timeout': 2}]},
+            }
+        patch_format.side_effect = lambda payload: jsonify(payload)
+        patch_queries.return_value = 'select params from parameters where {column} = "{value}"'
+        for endpoint, response in endpoint_response.items():
+            patch_connect_db.return_value = response
+            patch_format.return_value = {'message': response}
+            with self.app.test_request_context(endpoint):
+                resp = self.api.get_test_case()
+
+                patch_queries.assert_called_once_with(key='GET_TESTCASE_PARAMS')
+                patch_format.assert_called_once_with(response)
+
+                data = resp.get_json()
+                self.assertEqual(data, response)
+            #Reset mocks
+            patch_format.reset_mock()
+            patch_connect_db.reset_mock()
+            patch_queries.reset_mock()
+
+

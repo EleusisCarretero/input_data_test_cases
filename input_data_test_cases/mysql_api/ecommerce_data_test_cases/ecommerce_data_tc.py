@@ -1,6 +1,6 @@
 
 from flask import request
-from input_data_test_cases.mysql_api.mysql_api import MysqlApi
+from input_data_test_cases.mysql_api.mysql_api import MysqlApi, MyslApiException
 
 class EcommerceDataTCException(Exception):
     pass
@@ -46,7 +46,7 @@ class EcommerceDataTC(MysqlApi):
         try:
             base_command = self.define_queries(key='GET_TESTCASE_PARAMS')
             response = self.connect_data_base(command=base_command.format(column=column,value=value))
-        except EcommerceDataTCException:
+        except MyslApiException:
             response = {'message': 'Unable to get the desired test case'}
         return self.format_response(response)
     

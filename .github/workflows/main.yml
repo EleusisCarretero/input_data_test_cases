@@ -32,8 +32,8 @@ jobs:
           script: |
             const fs = require('fs');
             let readme = fs.readFileSync('README.md', 'utf8');
-            echo process.env.TEST_RESULT
             const result = process.env.TEST_RESULT || '✅ Tests passed';
+            console.log(`Actual result: ${result}`);
             readme = readme.replace(
               /(<!-- test-result-start -->)(.*?)(<!-- test-result-end -->)/s,
               `$1\n${result}\n$3`

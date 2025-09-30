@@ -44,6 +44,7 @@ jobs:
       - name: Commit changes in README
         run: |
             cat README.md
+            DATE=$(date "+%Y-%m-%d %H:%M:%S")
             git add .
-            git commit --date="YYYY-MM-DD HH:MM:SS" -m "Update readme with last results"
+            git commit -m "Update readme with last results. From $DATE"
 

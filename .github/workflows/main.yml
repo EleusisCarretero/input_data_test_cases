@@ -37,11 +37,12 @@ jobs:
             const result = process.env.TEST_RESULT || '✅ Tests passed';
             console.log(`Actual result: ${result}`);
             readme = readme.replace(
-              /(<!-- test-result-start -->)(.*?)(<!-- test-result-end -->)/s,
+              /(<!-- test-result-start -->)([\s\S]*?)(<!-- test-result-end -->)/s,
               `$1\n${result}\n$3`
             );
             fs.writeFileSync('README.md', readme);
           run: |
+            cat README.md
             git add .
             git commit --date="YYYY-MM-DD HH:MM:SS" -m "Update readme with last results"
 

@@ -1,6 +1,6 @@
-
 from flask import request
 from input_data_test_cases.mysql_api.mysql_api import MysqlApi, MyslApiException
+
 
 class EcommerceDataTCException(Exception):
     pass
@@ -9,16 +9,16 @@ class EcommerceDataTC(MysqlApi):
 
     def __init__(self, config):
         super().__init__(config)
-    
+
     def define_routes(self):
         self.app.add_url_rule("/",view_func=self.home)
         self.app.add_url_rule("/test_case",endpoint="get_test_case",view_func=self.get_test_case,methods=["GET"])
-    
+
     def define_queries(self, key):
         return {
             'GET_TESTCASE_PARAMS': 'select params from parameters where {column} = "{value}"'
-        }.get(key)
-    
+        }.get(key, None)
+
     def home(self):
         return self.format_response({'message': "Base url"})
 
@@ -49,7 +49,7 @@ class EcommerceDataTC(MysqlApi):
         except MyslApiException:
             response = {'message': 'Unable to get the desired test case'}
         return self.format_response(response)
-    
+
 if __name__ == "__main__":
     config = {
         'MYSQL_HOST': "shuttle.proxy.rlwy.net",

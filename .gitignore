@@ -1,8 +1,13 @@
+# VSC
 .vscode/
+# Project excluded
 dist/
 input_data_test_cases.egg-info/
-input_data_test_cases/mysql_api/__pycache__/mysql_api.cpython-313.pyc
-test/__pycache__/
-input_data_test_cases/mysql_api/ecommerce_data_test_cases/__pycache__/
-input_data_test_cases/__pycache__/
-input_data_test_cases/mysql_api/__pycache__/mysql_api.cpython-313.pyc
+# Python Caches
+__pycache__/
+*.py[cod]
+
+
+
+
+

@@ -2,5 +2,5 @@
 
 ## Last Github actions results
 <!-- test-result-start -->
-(overwritting)
+✅ Tests passed
 <!-- test-result-end -->

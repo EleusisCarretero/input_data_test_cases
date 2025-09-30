@@ -1,0 +1,11 @@
+test_define_queries (test_input_data_test_cases.test_mysql_api.test_ecommerce_data_test_cases.test_ecommerce_data_tc.TestEcommerceDataTC) ... ok
+test_define_routes (test_input_data_test_cases.test_mysql_api.test_ecommerce_data_test_cases.test_ecommerce_data_tc.TestEcommerceDataTC) ... ok
+test_get_test_case_invalid_requests (test_input_data_test_cases.test_mysql_api.test_ecommerce_data_test_cases.test_ecommerce_data_tc.TestEcommerceDataTC) ... ok
+test_get_test_case_raise_exception (test_input_data_test_cases.test_mysql_api.test_ecommerce_data_test_cases.test_ecommerce_data_tc.TestEcommerceDataTC) ... ok
+test_get_test_case_valid_requests (test_input_data_test_cases.test_mysql_api.test_ecommerce_data_test_cases.test_ecommerce_data_tc.TestEcommerceDataTC) ... ok
+test_home (test_input_data_test_cases.test_mysql_api.test_ecommerce_data_test_cases.test_ecommerce_data_tc.TestEcommerceDataTC) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.016s
+
+OK

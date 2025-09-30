@@ -1,15 +1,28 @@
 import unittest
-from flask import jsonify
-from unittest.mock import patch
+from flask import Flask, jsonify
+from unittest.mock import patch, call
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
 from input_data_test_cases.mysql_api.mysql_api import MyslApiException
 
 
-
 class TestEcommerceDataTC(unittest.TestCase):
+
     def setUp(self):
         self.api = EcommerceDataTC(config={})
         self.app = self.api.app
+
+    @patch.object(Flask, "add_url_rule")
+    @patch.object(EcommerceDataTC, "get_test_case")
+    @patch.object(EcommerceDataTC, "home")
+    def test_define_routes(self, patch_home, patch_get_test_case, add_url_rule_patch):
+
+        self.api.define_routes()
+        expected_calls = [
+            call("/", view_func=patch_home),
+            call("/test_case", endpoint="get_test_case",
+                 view_func=patch_get_test_case, methods=["GET"])
+        ]
+        add_url_rule_patch.assert_has_calls(expected_calls, any_order=False)
     
     @patch.object(EcommerceDataTC, "format_response")
     def test_home(self, patch_format):
@@ -30,7 +43,6 @@ class TestEcommerceDataTC(unittest.TestCase):
         for key, expect_query in expected_map_quieries.items():
             actual_query = self.api.define_queries(key)
             self.assertEqual(actual_query, expect_query)
-
 
     @patch.object(EcommerceDataTC, "format_response")
     @patch.object(EcommerceDataTC, "define_queries")

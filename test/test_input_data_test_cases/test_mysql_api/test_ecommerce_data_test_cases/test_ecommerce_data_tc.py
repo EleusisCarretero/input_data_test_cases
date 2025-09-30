@@ -1,7 +1,8 @@
 import unittest
 from flask import jsonify
-from unittest.mock import patch, Mock
+from unittest.mock import patch
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
+from input_data_test_cases.mysql_api.mysql_api import MyslApiException
 
 
 
@@ -64,3 +65,17 @@ class TestEcommerceDataTC(unittest.TestCase):
             patch_queries.reset_mock()
 
 
+    @patch.object(EcommerceDataTC, "format_response")
+    @patch.object(EcommerceDataTC, "define_queries")
+    @patch.object(EcommerceDataTC, "connect_data_base")
+    def test_get_test_case_raise_exception(self, patch_connect_db, patch_queries,patch_format):
+        patch_connect_db.side_effect = MyslApiException("Unable to execute command")
+        patch_format.side_effect = lambda payload: jsonify(payload)
+        patch_format.return_value = {'message': 'Unable to get the desired test case'}
+        with self.app.test_request_context('/test_case?id=1'):
+            resp = self.api.get_test_case()
+        patch_format.assert_called_once_with({'message': 'Unable to get the desired test case'})
+        patch_queries.assert_called_once_with(key='GET_TESTCASE_PARAMS')
+        data = resp.get_json()
+        self.assertEqual(data.get('message'), 'Unable to get the desired test case')
+            

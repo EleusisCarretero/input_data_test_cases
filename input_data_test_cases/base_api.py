@@ -18,7 +18,7 @@ class BaseApi(ABC):
 
     @abstractmethod
     def connect_data_base(self, **kwargs):
-         raise BaseApiException("Rout are not defined")
+        raise BaseApiException("Rout are not defined")
     
     @abstractmethod
     def define_routes(self):

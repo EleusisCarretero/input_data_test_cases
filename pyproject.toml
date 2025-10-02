@@ -19,5 +19,7 @@ dependencies = [
 dev = [
   "flask",
   "flask_mysqldb",
-  "setuptools"
+  "flask_sqlalchemy",
+  "setuptools",
+  "pytest"
 ]

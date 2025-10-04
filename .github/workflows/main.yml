@@ -3,13 +3,13 @@ on: [push]
 
 jobs:
   lint:
-    uses: .github/workflows/run-flake8.yml
+    uses: /.github/actions/run-flake8.yml
     with:
       file_under_test: '/test'
   build:
     steps:
       - name: Setup
-        uses: actions/custom-action/setup-common-env.yml
+        uses: /.github/actions/setup-common-env.yml
       - name: ⚒️ Execute Unit-Test
         run: |
           set +e

@@ -3,20 +3,14 @@ on: [push]
 
 jobs:
   lint:
-    uses: ./.github/workflows/build.yaml
+    uses: .github\workflows\run-flake8.yml
     with:
-      name: 'Linting'
-    steps:
-      - name: Install flake8
-        run: pip install flake8
-      - name: Run flake8
-        run: 
-  
-
-  
-
+      file_under_test: '/test'
   build:
-
+    uses: .github\workflows\setup-common-env.yml
+    with:
+      name: "build"
+    steps:
       - name: ⚒️ Execute Unit-Test
         run: |
           set +e

@@ -4,12 +4,9 @@ on:
   workflow_call:
     inputs:
       file_under_test:
-        required: false
         type: string
         default: '.'
       python-version:
-        description: Python version
-        required: false
         type: string
         default: '3.11'
 
@@ -17,13 +14,16 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup python
+      - uses: actions/checkout@v4
+      - name: Setup Python (local action)
         uses: ./.github/actions/setup-python
         with:
-          python-version: ${{ inputs.python-version }}
+          python-version: ${{ inputs['python-version'] }}
+
       - name: Install flake8
         run: pip install flake8
-      - name: Execute Flake8 on
+
+      - name: Execute Flake8
         run: |
-          echo "Executing flake 8 on file ${{ inputs.file_under_test }}"
-          flake8 inputs.file_under_test
+          echo "Executing flake8 on ${{ inputs.file_under_test }}"
+          flake8 ${{ inputs.file_under_test }}

@@ -1,22 +1,23 @@
-name: setup python
-description: checkout repo and install python
-
+name: Setup Common Env
+description: Checkout + deps
 inputs:
   python-version:
-    description: Python version
     required: false
     default: '3.11'
 
-jobs:
-  build:
+runs:
   using: composite
   steps:
-    - name: 🐍 Python setup on
-      with:
-        call_from: "Common setup"
+    - name: Setup Python (local action)
       uses: ./.github/actions/setup-python
-    - name: 💻 Install Dependencies
+      with:
+        python-version: ${{ inputs['python-version'] }}
+
+    - name: Install dependencies
+      shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install build setuptools wheel twine
-        pip install -e .[dev]
+        if [ -f "pyproject.toml" ] || [ -f "setup.py" ]; then
+          pip install -e ".[dev]" || pip install -e .
+        fi

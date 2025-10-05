@@ -14,9 +14,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup
-        uses: ./.github/actions/setup-common-env
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-common-env
+        with:
+          python-version: '3.11'
+
       - name: ⚒️ Execute Unit-Test
+        shell: bash
         run: |
           set +e
           python -m unittest discover -s test/unittest -p "test_*.py" -v > result.log 2>&1
@@ -27,30 +31,27 @@ jobs:
             echo "TEST_RESULT=❌ Tests failed" >> $GITHUB_ENV
           fi
           cat result.log
+
       - name: Update README with test result
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
             let readme = fs.readFileSync('README.md', 'utf8');
-            const preresult = process.env.TEST_RESULT;
-            console.log(`Preresult: ${preresult}`);
             const result = process.env.TEST_RESULT || '✅ Tests passed';
-            console.log(`Actual result: ${result}`);
             readme = readme.replace(
               /(<!-- test-result-start -->)([\s\S]*?)(<!-- test-result-end -->)/s,
               `$1\n${result}\n$3`
             );
             fs.writeFileSync('README.md', readme);
-      - name: Update README
-        env:
-            BRANCH_NAME: ${{ github.ref_name }}
-        run: |
-            cat README.md
-            DATE=$(date "+%Y-%m-%d %H:%M:%S")
-            git config --global user.name  "github-actions[bot]"
-            git config --global user.email "github-actions[bot]@users.noreply.github.com"
-            git add .
-            git commit -m "Update readme with last results. From $DATE"
-            git push origin "HEAD:${BRANCH_NAME}"
 
+      - name: Commit README
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+        shell: bash
+        run: |
+          DATE=$(date "+%Y-%m-%d %H:%M:%S")
+          git add README.md
+          git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
+            commit -m "Update readme with last results. From $DATE" || echo "No changes to commit"
+          git push origin "HEAD:${BRANCH_NAME}"

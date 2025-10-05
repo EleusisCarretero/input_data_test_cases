@@ -3,7 +3,7 @@ description: checkout repo and install python
 
 jobs:
   build:
-  runs-on: ubuntu-latest
+  using: "composite"
   steps:
     - name: 🐍 Python setup on
       with:

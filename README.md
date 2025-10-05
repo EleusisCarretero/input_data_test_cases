@@ -2,5 +2,5 @@
 
 ## Last Github actions results
 <!-- test-result-start -->
-✅ Tests passed
+❌ Tests failed
 <!-- test-result-end -->

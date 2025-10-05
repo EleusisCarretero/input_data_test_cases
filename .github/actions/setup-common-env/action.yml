@@ -1,0 +1,22 @@
+name: setup python
+description: checkout repo and install python
+
+inputs:
+  python-version:
+    description: Python version
+    required: false
+    default: '3.11'
+
+jobs:
+  build:
+  using: composite
+  steps:
+    - name: 🐍 Python setup on
+      with:
+        call_from: "Common setup"
+      uses: ./.github/actions/setup-python
+    - name: 💻 Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build setuptools wheel twine
+        pip install -e .[dev]

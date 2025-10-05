@@ -1,0 +1,25 @@
+name: setup python
+description: checkout repo and install python
+
+inputs:
+  python-version:
+    description: Python version
+    required: false
+    default: '3.11'
+
+runs:
+  using: composite
+  steps:
+    - name: Action called from
+      run: echo "This actions was called from ${{ inputs.call_from }}"
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        persist-credentials: true
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ inputs.python-version }}
+        cache: 'pip'
+      run: python --version

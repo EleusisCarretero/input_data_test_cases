@@ -18,6 +18,7 @@ jobs:
       python-version: '3.11'
 
   Results:
+    needs: [testing]
     runs-on: ubuntu-latest
     steps:
       - name: Update README with test result

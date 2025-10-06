@@ -21,6 +21,7 @@ jobs:
     needs: [testing]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Update README with test result
         uses: actions/github-script@v7
         with:

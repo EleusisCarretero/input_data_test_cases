@@ -11,27 +11,20 @@ jobs:
       file_under_test: 'test'
       python-version: '3.11'
 
-  build:
+  testing:
+    uses: ./.github/workflows/testing.yml
+    with:
+      file_under_test: test/unittest
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-common-env
         with:
           python-version: '3.11'
+          python-version: '3.11'
 
-      - name: ⚒️ Execute Unit-Test
-        shell: bash
-        run: |
-          set +e
-          python -m unittest discover -s test/unittest -p "test_*.py" -v > result.log 2>&1
-          exit_code=$?
-          if [ $exit_code -eq 0 ]; then
-            echo "TEST_RESULT=✅ Tests passed" >> $GITHUB_ENV
-          else
-            echo "TEST_RESULT=❌ Tests failed" >> $GITHUB_ENV
-          fi
-          cat result.log
-
+  Results:
+    steps:
       - name: Update README with test result
         uses: actions/github-script@v7
         with:

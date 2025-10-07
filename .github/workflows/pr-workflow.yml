@@ -1,0 +1,15 @@
+name: PR Work flow
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+jobs:
+  lint:
+    uses: ./.github/workflows/run-flake8.yml
+    with:
+      file_under_test: 'test'
+      python-version: '3.11'

@@ -48,3 +48,5 @@ jobs:
           git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
             commit -m "Update readme with last results. From $DATE" || echo "No changes to commit"
           git push origin "HEAD:${BRANCH_NAME}"
+      - name: Show context
+        run: echo "Actual Commit:${{github.event.commits}}"

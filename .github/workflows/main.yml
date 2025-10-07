@@ -49,4 +49,4 @@ jobs:
             commit -m "Update readme with last results. From $DATE" || echo "No changes to commit"
           git push origin "HEAD:${BRANCH_NAME}"
       - name: Show context
-        run: echo "Actual Commit:${{github.event.commits}}"
+        run: echo "Actual Commit:${{github.event.commits[0].message}}"

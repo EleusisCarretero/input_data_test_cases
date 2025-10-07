@@ -9,7 +9,7 @@ class TestEcommerceDataTCGetParams():
 
     @pytest.fixture(autouse=True)
     def setup_db(self):
-        # Config
+        # Config 
         self.config = {
             'MYSQL_HOST': os.getenv("TEST_HOST", "127.0.0.1"),
             'MYSQL_USER': os.getenv("TEST_USER", "root"),

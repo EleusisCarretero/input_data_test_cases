@@ -1,0 +1,10 @@
+name: Nightly pipeline
+on:
+    schedule:
+      - cron: "40 15 * * *"
+jobs:
+    testing:
+      uses: ./.github/workflows/testing.yml
+      with:
+        file_under_test: test/unittest
+        python-version: '3.11'

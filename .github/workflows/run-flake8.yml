@@ -14,20 +14,25 @@ jobs:
   preparer-matrix:
     runs-on: ubuntu-latest
     outputs:
-      file: ${{steps.matrix-arrays.outputs.result}}
+      file: ${{steps.matrix-arrays.outputs.result || inputs.file_under_test}} 
     steps:
-      - name: Convert str to Listar
+      - name: Take files from pull request
+        if: ${{ github.event_name }} == 'pull_request'
         uses: actions/github-script@v6
         id: matrix-arrays
         with:
-          script: "return context.payload.inputs['file_under_test'].split(',')"
-          result-encoding: list
+          script: "return inputs.file_under_test.split(',')"
+          result-encoding: json
+      - name: Take files from other events
+        if: ${{ github.event_name }} != 'pull_request'
+        run: echo "Let default value"
 
   lint:
     needs: preparer-matrix
+    
     strategy:
       matrix:
-        file: ${{ needs.preparer-matrix.outputs.file }}
+        file: ${{ fromJSON(needs.preparer-matrix.outputs.file)}}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

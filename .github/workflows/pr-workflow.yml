@@ -10,22 +10,24 @@ on:
 jobs:
   pr-files:
     runs-on: ubuntu-latest
+    outputs:
+      changed-files: ${{steps.step-files.outputs.files}}
+        
     steps:
       - uses: actions/checkout@v4
-      - name: Unshallow repository
-        run: git fetch --unshallow
-      - name: Obtener base y head
+        with:
+          fetch-depth: 0
+      - name: Fetch main branch
+        run: git fetch origin main
+      - name: Getting files changed vs main
+        id: step-files
         run: |
-          echo "base=${{ github.event.pull_request.base.sha }}"
-          echo "head=${{ github.event.pull_request.head.sha }}"
-      - name: Listar archivos cambiados en el PR
-        run: |
-          git fetch origin ${{ github.event.pull_request.base.ref }}
-          git fetch origin ${{ github.event.pull_request.head.ref }}
-          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
+          files=$(git diff --name-only origin/main...HEAD | paste -sd ',' -)
+          echo "files=$files" >> $GITHUB_OUTPUT
 
   lint:
+    needs: pr-files
     uses: ./.github/workflows/run-flake8.yml
     with:
-      file_under_test: 'test'
+      file_under_test: ${{needs.pr-files.outputs.changed-files}}
       python-version: '3.11'

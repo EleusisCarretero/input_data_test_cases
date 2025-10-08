@@ -11,7 +11,23 @@ on:
         default: '3.11'
 
 jobs:
+  preparer-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      file: ${{steps.matrix-arrays.outputs.result}}
+    steps:
+      - name: Convert str to Listar
+        uses: actions/github-script@v6
+        id: matrix-arrays
+        with:
+          script: "return context.payload.inputs['file_under_test'].split(',')"
+          result-encoding: list
+
   lint:
+    needs: preparer-matrix
+    strategy:
+      matrix:
+        file: ${{ needs.preparer-matrix.outputs.file }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -25,5 +41,5 @@ jobs:
 
       - name: Execute Flake8
         run: |
-          echo "Executing flake8 on ${{ inputs.file_under_test }}"
-          flake8 ${{ inputs.file_under_test }}
+          echo "Executing flake8 on ${{ matrix.file }}"
+          flake8 ${{ matrix.file }}

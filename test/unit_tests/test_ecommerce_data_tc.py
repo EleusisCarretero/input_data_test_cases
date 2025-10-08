@@ -30,7 +30,6 @@ class TestEcommerceDataTC(unittest.TestCase):
         patch_format.side_effect = lambda payload: jsonify(payload)
         with self.app.test_request_context("/"):
             resp = self.api.home()
-
         patch_format.assert_called_once_with(base_url_msg)
         data = resp.get_json()
         self.assertEqual(data, base_url_msg)

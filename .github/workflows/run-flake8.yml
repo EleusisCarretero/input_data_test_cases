@@ -17,7 +17,7 @@ jobs:
       file: ${{steps.matrix-arrays.outputs.result || inputs.file_under_test}} 
     steps:
       - name: Take files from pull request
-        if: ${{ github.event_name }} == 'pull_request'
+        if: ${{ github.event_name == 'pull_request'}}
         uses: actions/github-script@v6
         id: matrix-arrays
         with:
@@ -27,7 +27,7 @@ jobs:
             return arr
           result-encoding: json
       - name: Take files from other events
-        if: ${{ github.event_name }} != 'pull_request'
+        if: ${{ github.event_name != 'pull_request'}}
         run: |
           echo "Let default value"
           echo ${{ github.event_name }}

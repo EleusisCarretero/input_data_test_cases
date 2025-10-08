@@ -28,7 +28,9 @@ jobs:
           result-encoding: json
       - name: Take files from other events
         if: ${{ github.event_name }} != 'pull_request'
-        run: echo "Let default value"
+        run: |
+          echo "Let default value"
+          echo ${{ github.event_name }}
 
   lint:
     needs: preparer-matrix

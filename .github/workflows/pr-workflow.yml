@@ -8,6 +8,22 @@ on:
       - synchronize
 
 jobs:
+  pr-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Obtener base y head
+        run: |
+          echo "base=${{ github.event.pull_request.base.sha }}"
+          echo "head=${{ github.event.pull_request.head.sha }}"
+      - name: Listar archivos cambiados en el PR
+        run: |
+          git fetch origin ${{ github.event.pull_request.base.ref }} --depth=0
+          git fetch origin ${{ github.event.pull_request.head.ref }} --depth=0
+          git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
+
   lint:
     uses: ./.github/workflows/run-flake8.yml
     with:

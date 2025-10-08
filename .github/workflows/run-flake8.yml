@@ -14,10 +14,9 @@ jobs:
   preparer-matrix:
     runs-on: ubuntu-latest
     outputs:
-      file: ${{steps.matrix-arrays.outputs.result || inputs.file_under_test}} 
+      file: ${{steps.matrix-arrays.outputs.result}} 
     steps:
-      - name: Take files from pull request
-        if: ${{ github.event_name == 'pull_request'}}
+      - name: Files from event
         uses: actions/github-script@v6
         id: matrix-arrays
         with:
@@ -26,11 +25,7 @@ jobs:
             const arr = s.split(',').map(x => x.trim()).filter(Boolean)
             return arr
           result-encoding: json
-      - name: Take files from other events
-        if: ${{ github.event_name != 'pull_request'}}
-        run: |
-          echo "Let default value"
-          echo ${{ github.event_name }}
+      
 
   lint:
     needs: preparer-matrix

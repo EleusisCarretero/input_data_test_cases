@@ -16,7 +16,7 @@ jobs:
   lint:
     uses: ./.github/workflows/run-flake8.yml
     with:
-      file_under_test: 'test'
+      file_under_test: 'test,'
       python-version: '3.11'
 
   testing:

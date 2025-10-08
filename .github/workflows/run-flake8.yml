@@ -21,7 +21,10 @@ jobs:
         uses: actions/github-script@v6
         id: matrix-arrays
         with:
-          script: "return inputs.file_under_test.split(',')"
+          script: |
+            const s = '${{ inputs.file_under_test }}'
+            const arr = s.split(',').map(x => x.trim()).filter(Boolean)
+            return arr
           result-encoding: json
       - name: Take files from other events
         if: ${{ github.event_name }} != 'pull_request'
@@ -29,7 +32,6 @@ jobs:
 
   lint:
     needs: preparer-matrix
-    
     strategy:
       matrix:
         file: ${{ fromJSON(needs.preparer-matrix.outputs.file)}}

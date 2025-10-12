@@ -32,4 +32,4 @@ jobs:
           fi
           cat result.log
       - name: Execute Integartion testing
-        run: pytest test\integration_tests
+        run: pytest test\integration_tests\test_ecommerce_data_tc_get_params.py

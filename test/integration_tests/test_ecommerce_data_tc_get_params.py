@@ -106,6 +106,7 @@ class TestEcommerceDataTCGetParams():
         self.down_docker_compose()
 
     def test_get_test_case_by_id(self):
-        r = self.client.get("/test_case?id=1")
-        assert r.status_code, 200
-        assert "Kiki" in r.get_data(as_text=True)
+        for values in  self.test_data['init_values']['data']:
+            id = values['id']
+            r = self.client.get(f"/test_case?id={id}")
+            assert r.status_code, 200

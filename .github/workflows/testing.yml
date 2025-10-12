@@ -31,3 +31,5 @@ jobs:
             echo "TEST_RESULT=❌ Tests failed" >> $GITHUB_ENV
           fi
           cat result.log
+      - name: Execute Integartion testing
+        run: pytest test/integartion_test

@@ -21,5 +21,6 @@ dev = [
   "flask_mysqldb",
   "flask_sqlalchemy",
   "setuptools",
-  "pytest"
+  "pytest",
+  "PyYAML"
 ]

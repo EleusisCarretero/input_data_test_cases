@@ -24,7 +24,7 @@ jobs:
         run: |
           pwd
           set +e
-          python -m unittest discover -s test/unittest -p "test_*.py" -v > result.log 2>&1
+          python -m unittest discover -s test/unit_test -p "test_*.py" -v > result.log 2>&1
           exit_code=$?
           if [ $exit_code -eq 0 ]; then
             echo "TEST_RESULT=✅ Tests passed" >> $GITHUB_ENV

@@ -101,7 +101,7 @@ class TestEcommerceDataTCGetParams():
         subprocess.check_output(['docker', 'compose', '-f', compose_path, 'up', '-d'])
 
     def down_docker_compose(self):
-        subprocess.check_output('docker compose down')
+        subprocess.check_output(['docker', 'compose', 'down'])
     
     def teardown(self):
         self.down_docker_compose()

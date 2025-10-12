@@ -1,0 +1,33 @@
+data_base:
+  MYSQL_HOST: "127.0.0.1"
+  MYSQL_USER: root
+  MYSQL_PASSWORD: root
+  MYSQL_DB: testdb
+  MYSQL_PORT: 3307
+
+table:
+  name: parameters
+  columns:
+    - name: id
+      type: int
+      primary: true
+    - name: name
+      type: VARCHAR
+      length: 255
+    - name: params
+      type: json
+
+init_values:
+  data:
+    - id: 1
+      name: test_case_dummy
+      params:
+        - timeout: 10
+        - timeout: 20
+    - id: 2
+      name: test_case_login_dummy
+      params:
+        - user: John123
+          password: 123
+        - user: panfilo
+          password: wiek7

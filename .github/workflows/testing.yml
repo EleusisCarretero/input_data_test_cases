@@ -22,6 +22,7 @@ jobs:
       - name: ⚒️ Execute Unit-Test
         shell: bash
         run: |
+          pwd
           set +e
           python -m unittest discover -s test/unittest -p "test_*.py" -v > result.log 2>&1
           exit_code=$?

@@ -97,7 +97,8 @@ class TestEcommerceDataTCGetParams():
         cur.close()
     
     def init_docker_compose(self):
-        subprocess.check_output(['docker', 'compose', '-f', 'E:\\11)_Eleusis_Git_Stuf\\input_data_test_cases\\docker-compose.yaml', 'up', '-d'])
+        compose_path = os.path.join(os.path.dirname(__file__), "docker-compose.yaml")
+        subprocess.check_output(['docker', 'compose', '-f', compose_path, 'up', '-d'])
 
     def down_docker_compose(self):
         subprocess.check_output('docker compose down')

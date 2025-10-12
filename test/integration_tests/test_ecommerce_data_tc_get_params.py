@@ -4,49 +4,41 @@ import pytest
 import os
 from flask_sqlalchemy import SQLAlchemy
 import subprocess
+import yaml
+import os
+import json
 
 class TestEcommerceDataTCGetParams():
 
     @pytest.fixture(autouse=True)
     def setup_db(self):
-        # Config
-        self.config = {
-            'MYSQL_HOST': os.getenv("TEST_HOST", "127.0.0.1"),
-            'MYSQL_USER': os.getenv("TEST_USER", "root"),
-            'MYSQL_PASSWORD': os.getenv("TEST_PSSW", "root"),
-            'MYSQL_DB': os.getenv("TEST_DB", "testdb"),
-            'MYSQL_PORT': int(os.getenv("TEST_PORT", 3306)),
-        }
-
-        self.app = EcommerceDataTC(config=self.config)
-        self.client = self.app.app.test_client()
-
+        self.app = None
+        self.client = None
+        self._app_ctx = None
+        self.mysql = None
+        # import test data
+        self.test_data = self._import_test_data('test_data.yml')
+        # init docker compose
         self.init_docker_compose()
-
-        self._app_ctx = self.app.app.app_context()
-        self._app_ctx.push()
-
-        self.mysql = self.app.client  # tu wrapper MySQL(self.app)
-
-        self._wait_for_mysql_ready(max_seconds=30)
-
-        cur = self.mysql.connection.cursor()
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS users(
-                id INT PRIMARY KEY,
-                name VARCHAR(255)
+        # Config
+        self.config = {key: os.getenv(key, value) for key, value in self.test_data['data_base'].items()}
+        self.setup_app()
+        self.init_database(
+            self.test_data['table'],
+            self.test_data['init_values']['data']
             )
-        """)
-        cur.execute("REPLACE INTO users (id, name) VALUES (1, 'Kiki')")
-        self.mysql.connection.commit()
-        cur.close()
-
         yield
-
         self._app_ctx.pop()
         self.teardown()
 
-
+    def setup_app(self):
+        self.app = EcommerceDataTC(config=self.config)
+        self.client = self.app.app.test_client()
+        self._app_ctx = self.app.app.app_context()
+        self._app_ctx.push()
+        self.mysql = self.app.client
+        self._wait_for_mysql_ready(max_seconds=30)
+    
     def _wait_for_mysql_ready(self, max_seconds=30):
         import MySQLdb
         start = time.time()
@@ -62,6 +54,48 @@ class TestEcommerceDataTCGetParams():
                     raise
                 time.sleep(1)
     
+    def _import_test_data(self, test_data_file):
+        full_path = os.path.join(os.path.dirname(__file__), test_data_file)
+        with open(full_path, 'r') as f:
+            data = yaml.load(f, Loader=yaml.SafeLoader)
+        return data
+    
+
+    def init_database(self, table, data):
+        cur = self.mysql.connection.cursor()
+        table_name = table['name']
+        columns = table['columns']
+        create_table_command = f"CREATE TABLE IF NOT EXISTS {table_name}"
+        fields = ""
+        for i, column in enumerate(columns):
+            cmd = " ".join([column['name'], column['type']])
+            if column['type'].upper() == 'VARCHAR':
+                cmd= f"{cmd}({column.get('length', 255)})"
+            if column.get('primary', False):
+                cmd+= ' PRIMARY KEY'
+            if i < len(columns) - 1:
+                fields += cmd + ","
+            else:
+                fields += cmd
+        create_table_command += "(" + fields + ")"
+        cur.execute(
+            create_table_command
+        )
+        for datum in data:
+            fields = ",".join(map(str, list(datum.keys())))
+            values = []
+            for v in datum.values():
+                if isinstance(v, (dict, list)):
+                    values.append(json.dumps(v))
+                else:
+                    values.append(v)
+            placeholders = ",".join(["%s"] * len(values))  # %s,%s,%s
+            cmd = f"INSERT INTO parameters ({fields}) VALUES ({placeholders})"
+    
+            cur.execute(cmd, tuple(values))
+            self.mysql.connection.commit()
+        cur.close()
+    
     def init_docker_compose(self):
         subprocess.check_output(['docker', 'compose', '-f', 'E:\\11)_Eleusis_Git_Stuf\\input_data_test_cases\\docker-compose.yaml', 'up', '-d'])
 
@@ -72,6 +106,6 @@ class TestEcommerceDataTCGetParams():
         self.down_docker_compose()
 
     def test_get_test_case_by_id(self):
-        r = self.client.get("/users")
+        r = self.client.get("/test_case?id=1")
         assert r.status_code, 200
         assert "Kiki" in r.get_data(as_text=True)

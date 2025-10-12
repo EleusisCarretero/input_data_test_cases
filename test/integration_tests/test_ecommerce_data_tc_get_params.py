@@ -97,7 +97,7 @@ class TestEcommerceDataTCGetParams():
         cur.close()
     
     def init_docker_compose(self):
-        compose_path = os.path.join(os.path.dirname(__file__), "docker-compose.yaml")
+        compose_path = os.path.abspath("docker-compose.yaml")
         subprocess.check_output(['docker', 'compose', '-f', compose_path, 'up', '-d'])
 
     def down_docker_compose(self):

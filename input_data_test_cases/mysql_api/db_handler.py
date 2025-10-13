@@ -3,6 +3,7 @@ import json
 from enum import Enum
 from flask_mysqldb import MySQL
 
+
 class ModifyTableQuery(str, Enum):
     CREATE_TABLE_BASE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name}({columns_to_insert})"
     INSERT_NEW_VALUE_BASE_QUERY = "INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"

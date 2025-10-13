@@ -3,8 +3,9 @@
 import os
 import yaml
 import pytest
+from input_data_test_cases.mysql_api.db_handler import SQLDBHandler
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
-from test.integration_tests.db_handler import SQLDBHandler
+
 from test.integration_tests.docker_compose import DockerCompose
 
 

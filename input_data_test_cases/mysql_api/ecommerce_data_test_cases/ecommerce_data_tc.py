@@ -12,7 +12,8 @@ class EcommerceDataTC(MysqlApi):
 
     def define_routes(self):
         self.app.add_url_rule("/",view_func=self.home)
-        self.app.add_url_rule("/test_case",endpoint="get_test_case",view_func=self.get_test_case,methods=["GET"])
+        self.app.add_url_rule("/test_case",endpoint="test_case",view_func=self.test_case,methods=["GET", "POST"])
+        #self.app.add_url_rule("/test_case",endpoint="post_test_case",view_func=self.post_test_case,methods=["POST"])
 
     def define_queries(self, key):
         return {
@@ -21,6 +22,16 @@ class EcommerceDataTC(MysqlApi):
 
     def home(self):
         return self.format_response({'message': "Base url"})
+
+    def test_case(self):
+        if request.method == "GET":
+            self.get_test_case()
+        elif request.method == "POST":
+            self.post_test_case()
+        else:
+            pass
+    def post_test_case(self):
+        print("POST query")
 
     def get_test_case(self):
         response = {}
@@ -49,6 +60,8 @@ class EcommerceDataTC(MysqlApi):
         except MyslApiException:
             response = {'message': 'Unable to get the desired test case'}
         return self.format_response(response)
+
+
 
 if __name__ == "__main__":
     config = {

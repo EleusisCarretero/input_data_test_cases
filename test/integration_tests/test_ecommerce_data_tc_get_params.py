@@ -1,14 +1,12 @@
-import time
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
 import pytest
 import os
-from flask_sqlalchemy import SQLAlchemy
-import subprocess
 import yaml
 import os
-import json
+
 
 from test.integration_tests.db_handler import DBHandler
+from test.integration_tests.docker_compose import DockerCompose
 
 
 class TestEcommerceDataTCGetParamsException(Exception):
@@ -26,8 +24,6 @@ class TestEcommerceDataTCGetParams():
         self.db_handler = None
         # import test data
         self.test_data = self._import_test_data('test_data.yml')
-        # init docker compose
-        self.init_docker_compose()
         # Config
         self.config = {key: os.getenv(key, value) for key, value in self.test_data['data_base'].items()}
         self.setup_app()
@@ -36,6 +32,8 @@ class TestEcommerceDataTCGetParams():
 
     def setup_app(self):
         self.app = EcommerceDataTC(config=self.config)
+        self.docker_compose_hanlder = DockerCompose('docker-compose.yaml')
+        self.docker_compose_hanlder.init_docker_compose()
         self.client = self.app.app.test_client()
         self.db_handler = DBHandler(app=self.app)
         self.init_database(
@@ -54,17 +52,10 @@ class TestEcommerceDataTCGetParams():
         with open(full_path, 'r') as f:
             data = yaml.load(f, Loader=yaml.SafeLoader)
         return data
-
-    def init_docker_compose(self):
-        compose_path = os.path.abspath("docker-compose.yaml")
-        subprocess.check_output(['docker', 'compose', '-f', compose_path, 'up', '-d'])
-
-    def down_docker_compose(self):
-        subprocess.check_output(['docker', 'compose', 'down'])
     
     def teardown(self):
         self.db_handler.teardown()
-        self.down_docker_compose()
+        self.docker_compose_hanlder.down_docker_compose()
 
     def test_get_test_case_by_id(self):
         for values in  self.test_data['init_values']['data']:

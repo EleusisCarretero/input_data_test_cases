@@ -1,5 +1,14 @@
 from abc import ABC, abstractmethod
 from flask import Flask,jsonify
+from enum import Enum
+
+
+class StatusCode(int, Enum):
+    OK = 200
+    BAD_REQUEST = 400
+    NOT_FOUND = 404
+
+
 
 class BaseApiException(Exception):
     pass
@@ -27,5 +36,5 @@ class BaseApi(ABC):
     def run(self, debug):
         self.app.run(debug=debug)
     
-    def format_response(self, response):
-        return jsonify(response)
+    def format_response(self, response, status_code):
+        return jsonify(response), status_code

@@ -14,10 +14,14 @@ class MysqlApi(BaseApi):
         self.app.config = {**self.app.config, **self.config}
         return MySQL(self.app)
 
-    def connect_data_base(self, command):
+    def connect_data_base(self, command, extra=None):
         cursor = self.client.connection.cursor(mysql_c.DictCursor)
-        cursor.execute(command)
-        data = cursor.fetchone()
+        if extra:
+            cursor.execute(command, extra)
+        else:
+            cursor.execute(command)
+        #data = cursor.fetchone()
+        data= cursor.connection.commit()
         if not data:
             raise MyslApiException("Unable to execute command")
         return data

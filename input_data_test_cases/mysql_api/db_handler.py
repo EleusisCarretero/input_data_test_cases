@@ -8,6 +8,7 @@ class ModifyTableQuery(str, Enum):
     CREATE_TABLE_BASE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name}({columns_to_insert})"
     INSERT_NEW_VALUE_BASE_QUERY = "INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
     DELETE_VALUE_WHERE_COLUMN_EQUALS = 'DELETE FROM {table_name} where {column} = "{value}"'
+    UPDATE_VALUE_WHERE_COLUMN_EQUALS = 'UPDATE {table_name} set {updates} where {column} = "{value}"'
 
 
 class ConsultTableQuery(str, Enum):

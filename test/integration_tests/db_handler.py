@@ -1,69 +1,91 @@
 import time
 import json
+from enum import Enum
+from flask_mysqldb import MySQL
+
+class ModifyTableQuery(str, Enum):
+    CREATE_TABLE_BASE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name}({columns_to_insert})"
+    INSERT_NEW_VALUE_BASE_QUERY = "INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
 
 
-class DBHandlerException(Exception):
+class ConsultTableQuery(str, Enum):
+    WHERE_COLUMN_EQUALS = 'select params from {table_name} where {column} = "{value}"',
+
+
+class SQLDBHandlerException(Exception):
     pass
 
 
-class DBHandler():
-    CREATE_TABLE_BASE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name}({columns_to_insert})"
-    INSERT_NEW_VALUE_BASE_QUERY = "INSERT INTO parameters ({columns}) VALUES ({placeholders})"
+class SQLDBHandler():
+   
 
-    def __init__(self, app):
-        self._app_ctx = app.app.app_context()
+    def __init__(self, engine, **config):
+        self.engine = engine
+        self.param_symbol = "%s" if isinstance(engine, MySQL) else "?"
+        self._app_ctx = self.engine.app.app_context()
         self._app_ctx.push()
-        self.mysql = app.client
+        self.conn = engine.connect
+        self.cursor =  self.conn.cursor()
         self._wait_for_mysql_ready(max_seconds=30)
+    
+    def fetchone(self):
+        return self.cursor.fetchone()
 
-    def teardown(self):
-        self._app_ctx.pop()
+    def fetchall(self):
+        return self.cursor.fetchall()
+
+    def commit(self):
+        self.conn.commit()
+
+    def close(self):
+        self.cursor.close()
+        self.conn.close()
+
     
     def _wait_for_mysql_ready(self, max_seconds=30):
         start = time.time()
         while True:
             try:
-                cur = self.mysql.connection.cursor()
-                cur.execute("SELECT 1")
-                cur.fetchall()
-                cur.close()
+                self.cursor.execute("SELECT 1")
+                self.fetchall()
+                #self.close()
                 return
             except Exception:
                 if time.time() - start > max_seconds:
                     raise
                 time.sleep(1)
+    
+    def _modify_table(self, base_query:ModifyTableQuery, kwarg, params=()):
+        self._query_cmd(
+            base_query=base_query,
+            kwarg=kwarg,
+            params=params
+        )
+        self.commit()
+    
+    def _consult_table(self, base_query:ConsultTableQuery, kwarg, params=()):
+        self._query_cmd(
+            base_query=base_query,
+            kwarg=kwarg,
+            params=params
+        )
+        self.fetchone()
 
-    def _handle_cursor(self):
-        cur = self.mysql.connection.cursor()
-        yield cur
-        cur.close()
-
-    def _query_cmd(self, cur, base_query, kwarg, extra=None):
-        cmd = base_query.format(**kwarg)
-        if extra:
-            cur.execute(cmd, tuple(extra))
-        else:
-            cur.execute(cmd)
-        self.mysql.connection.commit()
+    def _query_cmd(self, base_query, kwarg, params):
+        query = base_query.format(**kwarg)
+        self.cursor.execute(query, params)
     
     def init_database(self, table, data):
-
-        try:
-            cur = next(self._handle_cursor())
-        except Exception as e:
-            raise DBHandlerException("Unable to create cursor") from e
-
-        self._create_db(
-            cur=cur,
+        self.create_db(
             table_name=table['name'],
             columns=table['columns']
         )
-        self._insert_values_db(
-            cur=cur,
+        self.insert_new_value(
+            table_name=table['name'],
             data=data
         )
     
-    def _create_db(self, cur, table_name, columns):
+    def create_db(self, table_name, columns):
         columns_to_insert = ""
         for i, column in enumerate(columns):
             cmd = " ".join([column['name'], column['type']])
@@ -75,13 +97,12 @@ class DBHandler():
                 columns_to_insert += cmd + "," 
             else:
                 columns_to_insert += cmd
-        self._query_cmd(
-            cur=cur,
-            base_query=self.CREATE_TABLE_BASE_QUERY,
+        self._modify_table(
+            base_query=ModifyTableQuery.CREATE_TABLE_BASE_QUERY,
             kwarg={'table_name':table_name, 'columns_to_insert':columns_to_insert},
         )
-    
-    def _insert_values_db(self, cur, data):
+
+    def insert_new_value(self, table_name, data):
         for datum in data:
             columns = ",".join(map(str, list(datum.keys())))
             values = []
@@ -91,9 +112,8 @@ class DBHandler():
                 else:
                     values.append(v)
             placeholders = ",".join(["%s"] * len(values))  # %s,%s,%s
-            self._query_cmd(
-                cur=cur,
-                base_query=self.INSERT_NEW_VALUE_BASE_QUERY,
-                kwarg={'columns':columns, 'placeholders':placeholders},
-                extra=values
+            self._modify_table(
+                base_query=ModifyTableQuery.INSERT_NEW_VALUE_BASE_QUERY,
+                kwarg={'table_name':table_name,'columns':columns, 'placeholders':placeholders},
+                params=values
             )

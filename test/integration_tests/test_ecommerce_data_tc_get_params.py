@@ -4,7 +4,7 @@ import os
 import yaml
 import pytest
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
-from test.integration_tests.db_handler import DBHandler
+from test.integration_tests.db_handler import SQLDBHandler
 from test.integration_tests.docker_compose import DockerCompose
 
 
@@ -34,7 +34,7 @@ class TestEcommerceDataTCGetParams():
         self.docker_compose_hanlder = DockerCompose('docker-compose.yaml')
         self.docker_compose_hanlder.init_docker_compose()
         self.client = self.app.app.test_client()
-        self.db_handler = DBHandler(app=self.app)
+        self.db_handler = SQLDBHandler(engine=self.app.client, config=self.app.config)
         self.init_database(
             self.test_data['table'],
             self.test_data['init_values']['data']
@@ -53,7 +53,7 @@ class TestEcommerceDataTCGetParams():
         return data
 
     def teardown(self):
-        self.db_handler.teardown()
+        self.db_handler.close()
         self.docker_compose_hanlder.down_docker_compose()
 
     def test_get_test_case_by_id(self):

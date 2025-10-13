@@ -34,7 +34,7 @@ class TestEcommerceDataTCGetParams():
         self.docker_compose_hanlder = DockerCompose('docker-compose.yaml')
         self.docker_compose_hanlder.init_docker_compose()
         self.client = self.app.app.test_client()
-        self.db_handler = SQLDBHandler(engine=self.app.client, config=self.app.config)
+        self.db_handler = SQLDBHandler(engine=self.app.client)
         self.init_database(
             self.test_data['table'],
             self.test_data['init_values']['data']

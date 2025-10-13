@@ -19,7 +19,7 @@ class SQLDBHandlerException(Exception):
 class SQLDBHandler():
    
 
-    def __init__(self, engine, **config):
+    def __init__(self, engine):
         self.engine = engine
         self.param_symbol = "%s" if isinstance(engine, MySQL) else "?"
         self._app_ctx = self.engine.app.app_context()
@@ -41,14 +41,12 @@ class SQLDBHandler():
         self.cursor.close()
         self.conn.close()
 
-    
     def _wait_for_mysql_ready(self, max_seconds=30):
         start = time.time()
         while True:
             try:
                 self.cursor.execute("SELECT 1")
                 self.fetchall()
-                #self.close()
                 return
             except Exception:
                 if time.time() - start > max_seconds:
@@ -111,7 +109,7 @@ class SQLDBHandler():
                     values.append(json.dumps(v))
                 else:
                     values.append(v)
-            placeholders = ",".join(["%s"] * len(values))  # %s,%s,%s
+            placeholders = ",".join([self.param_symbol] * len(values))  # %s,%s,%s
             self._modify_table(
                 base_query=ModifyTableQuery.INSERT_NEW_VALUE_BASE_QUERY,
                 kwarg={'table_name':table_name,'columns':columns, 'placeholders':placeholders},

@@ -1,10 +1,9 @@
-from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
-import pytest
+
+
 import os
 import yaml
-import os
-
-
+import pytest
+from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
 from test.integration_tests.db_handler import DBHandler
 from test.integration_tests.docker_compose import DockerCompose
 
@@ -52,7 +51,7 @@ class TestEcommerceDataTCGetParams():
         with open(full_path, 'r') as f:
             data = yaml.load(f, Loader=yaml.SafeLoader)
         return data
-    
+
     def teardown(self):
         self.db_handler.teardown()
         self.docker_compose_hanlder.down_docker_compose()

@@ -7,6 +7,7 @@ from flask_mysqldb import MySQL
 class ModifyTableQuery(str, Enum):
     CREATE_TABLE_BASE_QUERY = "CREATE TABLE IF NOT EXISTS {table_name}({columns_to_insert})"
     INSERT_NEW_VALUE_BASE_QUERY = "INSERT INTO {table_name} ({columns}) VALUES ({placeholders})"
+    DELETE_VALUE_WHERE_COLUMN_EQUALS = 'DELETE FROM {table_name} where {column} = "{value}"'
 
 
 class ConsultTableQuery(str, Enum):
@@ -37,6 +38,9 @@ class SQLDBHandler():
 
     def commit(self):
         self.conn.commit()
+    
+    def rowcount(self):
+        return self.cursor.rowcount
 
     def close(self):
         self.cursor.close()
@@ -54,24 +58,25 @@ class SQLDBHandler():
                     raise
                 time.sleep(1)
     
-    def _modify_table(self, base_query:ModifyTableQuery, kwarg, params=()):
+    def modify_table(self, base_query:ModifyTableQuery, kwargs, params=()):
         self._query_cmd(
             base_query=base_query,
-            kwarg=kwarg,
+            kwargs=kwargs,
             params=params
         )
         self.commit()
+        return self.rowcount()
     
-    def _consult_table(self, base_query:ConsultTableQuery, kwarg, params=()):
+    def consult_table(self, base_query:ConsultTableQuery, kwargs, params=()):
         self._query_cmd(
             base_query=base_query,
-            kwarg=kwarg,
+            kwargs=kwargs,
             params=params
         )
-        self.fetchone()
+        return self.fetchone()
 
-    def _query_cmd(self, base_query, kwarg, params):
-        query = base_query.format(**kwarg)
+    def _query_cmd(self, base_query, kwargs, params):
+        query = base_query.format(**kwargs)
         self.cursor.execute(query, params)
     
     def init_database(self, table, data):
@@ -96,9 +101,9 @@ class SQLDBHandler():
                 columns_to_insert += cmd + "," 
             else:
                 columns_to_insert += cmd
-        self._modify_table(
+        self.modify_table(
             base_query=ModifyTableQuery.CREATE_TABLE_BASE_QUERY,
-            kwarg={'table_name':table_name, 'columns_to_insert':columns_to_insert},
+            kwargs={'table_name':table_name, 'columns_to_insert':columns_to_insert},
         )
 
     def insert_new_value(self, table_name, data):
@@ -111,8 +116,8 @@ class SQLDBHandler():
                 else:
                     values.append(v)
             placeholders = ",".join([self.param_symbol] * len(values))  # %s,%s,%s
-            self._modify_table(
+            self.modify_table(
                 base_query=ModifyTableQuery.INSERT_NEW_VALUE_BASE_QUERY,
-                kwarg={'table_name':table_name,'columns':columns, 'placeholders':placeholders},
+                kwargs={'table_name':table_name,'columns':columns, 'placeholders':placeholders},
                 params=values
             )

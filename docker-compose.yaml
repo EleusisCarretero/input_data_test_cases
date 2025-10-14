@@ -5,6 +5,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: testdb
+    container_name: my-db
     ports:
       - "127.0.0.1:3307:3306"
     healthcheck:
@@ -12,3 +13,4 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+  

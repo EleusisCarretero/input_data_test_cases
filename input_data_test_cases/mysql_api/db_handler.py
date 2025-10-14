@@ -27,9 +27,10 @@ class SQLDBHandler():
         self.param_symbol = "%s" if isinstance(engine, MySQL) else "?"
         self._app_ctx = self.engine.app.app_context()
         self._app_ctx.push()
+        time.sleep(5)
         self.conn = engine.connect
         self.cursor =  self.conn.cursor()
-        self._wait_for_mysql_ready(max_seconds=30)
+        self._wait_for_mysql_ready(max_seconds=40)
     
     def fetchone(self):
         return self.cursor.fetchone()

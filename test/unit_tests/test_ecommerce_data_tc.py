@@ -1,39 +1,89 @@
 import unittest
 from flask import Flask, jsonify
-from unittest.mock import patch, call
+from unittest.mock import patch, call, Mock
+from input_data_test_cases.base_api import StatusCode
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
 from input_data_test_cases.mysql_api.mysql_api import MyslApiException
 
 
 class TestEcommerceDataTC(unittest.TestCase):
 
-    def setUp(self):
-        self.api = EcommerceDataTC(config={})
+    @patch("input_data_test_cases.mysql_api.mysql_api.MySQL")
+    def setUp(self, mock_mysql):
+        config = {
+        'MYSQL_HOST': 'fake_host',
+        'MYSQL_USER': 'fake_user',
+        'MYSQL_PASSWORD': 'fake_pssw',
+        'MYSQL_DB': 'fake_db',
+        'MYSQL_PORT': 1111,
+        }
+        self.api = EcommerceDataTC(config=config)
         self.app = self.api.app
+        self.mock_db = mock_mysql
+    
+    @staticmethod
+    def mocking_format(payload, status_code):
+        return jsonify(payload), status_code
 
     @patch.object(Flask, "add_url_rule")
+    @patch.object(EcommerceDataTC, "update_test_case")
+    @patch.object(EcommerceDataTC, "delete_test_case")
+    @patch.object(EcommerceDataTC, "post_test_case")
     @patch.object(EcommerceDataTC, "get_test_case")
     @patch.object(EcommerceDataTC, "home")
-    def test_define_routes(self, patch_home, patch_get_test_case, add_url_rule_patch):
-
+    def test_define_routes(
+        self,
+        patch_home,
+        patch_get_test_case,
+        patch_post_test_case,
+        patch_delete_test_case,
+        patch_update_test_case,
+        add_url_rule_patch):
         self.api.define_routes()
         expected_calls = [
-            call("/", view_func=patch_home),
-            call("/test_case", endpoint="get_test_case",
-                 view_func=patch_get_test_case, methods=["GET"])
+            call(
+                "/",
+                view_func=patch_home
+                ),
+            call(
+                "/test_case",
+                endpoint="get_test_case",
+                view_func=patch_get_test_case,
+                methods=["GET"]
+            ),
+            call(
+                "/test_case",
+                endpoint="post_test_case",
+                view_func=patch_post_test_case,
+                methods=["POST"]
+            ),
+             call(
+                "/test_case",
+                endpoint="delete_test_case",
+                view_func=patch_delete_test_case,
+                methods=["DELETE"]
+            ),
+             call(
+                "/test_case",
+                endpoint="update_test_case",
+                view_func=patch_update_test_case,
+                methods=["PUT"]
+            )
         ]
         add_url_rule_patch.assert_has_calls(expected_calls, any_order=False)
     
     @patch.object(EcommerceDataTC, "format_response")
     def test_home(self, patch_format):
         base_url_msg = {'message': "Base url"}
-        patch_format.side_effect = lambda payload: jsonify(payload)
+        expected_code = StatusCode.OK
+        patch_format.side_effect = lambda payload, status_code: self.mocking_format(payload, status_code)
         with self.app.test_request_context("/"):
-            resp = self.api.home()
+            resp, code = self.api.home()
 
-        patch_format.assert_called_once_with(base_url_msg)
+        patch_format.assert_called_once_with(base_url_msg, status_code=expected_code)
         data = resp.get_json()
         self.assertEqual(data, base_url_msg)
+        self.assertEqual(code, expected_code)
 
     def test_define_queries(self):
         expected_map_quieries = {

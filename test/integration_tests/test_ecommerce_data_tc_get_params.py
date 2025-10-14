@@ -15,9 +15,7 @@ class TestEcommerceDataTCGetParams():
 
     @pytest.fixture(autouse=True)
     def setup_db(self):
-        # import test data
         self.test_data = self._import_test_data('test_data.yml')
-        # Config
         self.config = {key: os.getenv(key, value) for key, value in self.test_data['data_base'].items()}
         self.setup_app()
         yield

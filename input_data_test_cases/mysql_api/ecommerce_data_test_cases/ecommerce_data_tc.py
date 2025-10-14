@@ -81,6 +81,8 @@ class EcommerceDataTC(MysqlApi):
     def post_test_case(self):
         name = request.form.get('name', None)
         params = request.form.get('params', None)
+        if name is None or params is None:
+            return self.format_response({'message': 'Missing arguments'}, status_code=StatusCode.BAD_REQUEST)
         columns = "name, params"
         values =  [name, str(params)]
         placeholders = ",".join(["%s"] * len(values))  # %s,%s,%s

@@ -3,6 +3,7 @@
 # Project excluded
 dist/
 input_data_test_cases.egg-info/
+result.log
 # Python Caches
 __pycache__/
 *.py[cod]

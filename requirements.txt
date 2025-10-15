@@ -1,0 +1,8 @@
+flask
+flask_mysqldb
+flask_sqlalchemy
+setuptools
+pytest
+PyYAML
+waitress; sys_platform == "win32"
+gunicorn; sys_platform == "linux"

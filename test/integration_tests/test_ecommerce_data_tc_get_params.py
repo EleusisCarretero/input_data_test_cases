@@ -12,7 +12,7 @@ from typing import Any, Dict, List
 import pytest
 import yaml
 
-from input_data_test_cases.mysql_api.ecommerce_data_test_cases import(
+from input_data_test_cases.mysql_api.ecommerce_data_test_cases import (
     ecommerce_data_tc as ec_data
 )
 from test.integration_tests.docker_compose import DockerCompose

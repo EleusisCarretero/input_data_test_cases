@@ -8,7 +8,7 @@ from input_data_test_cases.base_api import StatusCode
 from input_data_test_cases.mysql_api.db_handler import (
     ConsultTableQuery,
     ModifyTableQuery)
-from input_data_test_cases.mysql_api.ecommerce_data_test_cases import(
+from input_data_test_cases.mysql_api.ecommerce_data_test_cases import (
     ecommerce_data_tc as ec_data
 )
 

@@ -16,9 +16,9 @@ from input_data_test_cases.mysql_api.mysql_api import MyslApiException
 class TestEcommerceDataTC(unittest.TestCase):
     """
     Unit test suite for the EcommerceDataTC class.
-    
-    These tests validate the Flask routes, query mapping, 
-    request/response formatting, and error handling for the 
+
+    These tests validate the Flask routes, query mapping,
+    request/response formatting, and error handling for the
     EcommerceDataTC API wrapper.
     """
 
@@ -113,7 +113,7 @@ class TestEcommerceDataTC(unittest.TestCase):
         """
         Test the home endpoint ("/").
 
-        Ensures that it returns the expected JSON message and 
+        Ensures that it returns the expected JSON message and
         status code, and that the format_response method is called.
         """
         base_url_msg = {'message': "Base url"}
@@ -134,7 +134,7 @@ class TestEcommerceDataTC(unittest.TestCase):
         """
         Test the mapping of operation keys to SQL query templates.
 
-        Verifies that define_queries returns the correct query 
+        Verifies that define_queries returns the correct query
         for valid keys and None for invalid keys.
         """
         expected_map_quieries = {
@@ -245,11 +245,10 @@ class TestEcommerceDataTC(unittest.TestCase):
     @patch.object(EcommerceDataTC, "format_response")
     @patch.object(EcommerceDataTC, "define_queries")
     @patch.object(EcommerceDataTC, "query")
-    def test_get_test_case_raise_exception(
-        self,
-        query_connect_db,
-        patch_queries,
-        patch_format):
+    def test_get_test_case_raise_exception(self,
+                                           query_connect_db,
+                                           patch_queries,
+                                           patch_format):
         """
         Test get_test_case when the underlying DB
         query raises an exception.

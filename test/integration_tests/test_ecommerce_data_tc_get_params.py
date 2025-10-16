@@ -6,8 +6,6 @@ This module:
 - Seeds the database with known values.
 - Validates API responses using Flask's test client.
 """
-from __future__ import annotations
-
 import os
 from typing import Any, Dict, List
 
@@ -46,8 +44,8 @@ class TestEcommerceDataTCGetParams:
         - Tears down by closing DB connections
         and stopping Docker Compose.
         """
-        self.test_data: Dict[str, Any] = self._import_test_data("test_data.yml")
-        self.config: Dict[str, Any] = {
+        self.test_data = self._import_test_data("test_data.yml")
+        self.config = {
             key: os.getenv(key, value)
             for key, value in self.test_data["data_base"].items()
         }
@@ -100,7 +98,7 @@ class TestEcommerceDataTCGetParams:
         """
         full_path = os.path.join(os.path.dirname(__file__), test_data_file)
         with open(full_path, "r", encoding="utf-8") as f:
-            data: Dict[str, Any] = yaml.safe_load(f)
+            data = yaml.safe_load(f)
         return data
 
     def _teardown(self) -> None:

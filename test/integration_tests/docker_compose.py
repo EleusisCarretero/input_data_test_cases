@@ -13,9 +13,10 @@ class CompCmd(StrEnum):
         'docker,compose,-f,{compose_path},up,-d'
     DOWN = \
         'docker,compose,down'
-    INSP = \
-        ("docker inspect --format="
-        "'{{{{.State.Health.Status}}}}' {container}")
+    INSP = (
+        "docker inspect --format="
+        "'{{{{.State.Health.Status}}}}' {container}"
+    )
 
 
 class DockerCompose:
@@ -37,7 +38,7 @@ class DockerCompose:
             Compose YAML file.
         """
         self.compose_path = os.path.abspath(docker_compose_file)
-    
+
     @staticmethod
     def _convert_list(cmd, c=","):
         return cmd.split(c)
@@ -111,7 +112,7 @@ class DockerCompose:
 
     def __delattr__(self, name: str):
         """
-        Ensure Docker Compose environment is cleaned up when 
+        Ensure Docker Compose environment is cleaned up when
         the attribute is deleted. Calls `docker compose down`.
 
         Args:

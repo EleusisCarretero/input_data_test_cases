@@ -27,4 +27,7 @@ jobs:
 
   build:
     needs: [testing]
+    permissions:
+      contents: read
+      packages: write
     uses: ./.github/workflows/build_image.yml

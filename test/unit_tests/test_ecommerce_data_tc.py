@@ -68,7 +68,8 @@ class TestEcommerceDataTC(unittest.TestCase):
         patch_post_test_case,
         patch_delete_test_case,
         patch_update_test_case,
-        add_url_rule_patch):
+        add_url_rule_patch
+    ):
         """
         Test that API routes are defined correctly in the Flask app.
 
@@ -159,7 +160,8 @@ class TestEcommerceDataTC(unittest.TestCase):
         self,
         patch_connect_db,
         patch_queries,
-        patch_format):
+        patch_format
+    ):
         """
         Test get_test_case when called with invalid request parameters.
 
@@ -201,7 +203,8 @@ class TestEcommerceDataTC(unittest.TestCase):
         self,
         patch_connect_db,
         patch_queries,
-        patch_format):
+        patch_format
+    ):
         """
         Test get_test_case when called with valid id
         or name parameters.
@@ -245,10 +248,12 @@ class TestEcommerceDataTC(unittest.TestCase):
     @patch.object(EcommerceDataTC, "format_response")
     @patch.object(EcommerceDataTC, "define_queries")
     @patch.object(EcommerceDataTC, "query")
-    def test_get_test_case_raise_exception(self,
-                                           query_connect_db,
-                                           patch_queries,
-                                           patch_format):
+    def test_get_test_case_raise_exception(
+        self,
+        query_connect_db,
+        patch_queries,
+        patch_format
+    ):
         """
         Test get_test_case when the underlying DB
         query raises an exception.

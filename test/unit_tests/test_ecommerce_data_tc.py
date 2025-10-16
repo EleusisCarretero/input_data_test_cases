@@ -40,7 +40,7 @@ class TestEcommerceDataTC(unittest.TestCase):
         self.api = EcommerceDataTC(config=config)
         self.app = self.api.app
         self.mock_db = mock_mysql
-    
+
     @staticmethod
     def mocking_format(payload, status_code):
         """
@@ -107,12 +107,12 @@ class TestEcommerceDataTC(unittest.TestCase):
             expected_calls,
             any_order=False
         )
-    
+
     @patch.object(EcommerceDataTC, "format_response")
     def test_home(self, patch_format):
         """
         Test the home endpoint ("/").
-        
+
         Ensures that it returns the expected JSON message and 
         status code, and that the format_response method is called.
         """
@@ -133,19 +133,19 @@ class TestEcommerceDataTC(unittest.TestCase):
     def test_define_queries(self):
         """
         Test the mapping of operation keys to SQL query templates.
-        
+
         Verifies that define_queries returns the correct query 
         for valid keys and None for invalid keys.
         """
         expected_map_quieries = {
-            'GET_TESTCASE_PARAMS': \
-                ConsultTableQuery.WHERE_COLUMN_EQUALS,
-            'POST_TESTCASE_PARAMS': \
-                ModifyTableQuery.INSERT_NEW_VALUE_BASE_QUERY,
-            'DELETE_TEST_CASE': \
-                ModifyTableQuery.DELETE_VALUE_WHERE_COLUMN_EQUALS,
-            'UPDATE_TEST_CASE': \
-                ModifyTableQuery.UPDATE_VALUE_WHERE_COLUMN_EQUALS,
+            'GET_TESTCASE_PARAMS':
+            ConsultTableQuery.WHERE_COLUMN_EQUALS,
+            'POST_TESTCASE_PARAMS':
+            ModifyTableQuery.INSERT_NEW_VALUE_BASE_QUERY,
+            'DELETE_TEST_CASE':
+            ModifyTableQuery.DELETE_VALUE_WHERE_COLUMN_EQUALS,
+            'UPDATE_TEST_CASE':
+            ModifyTableQuery.UPDATE_VALUE_WHERE_COLUMN_EQUALS,
             'INVALID_KEY': None
         }
         for key, expect_query in expected_map_quieries.items():
@@ -162,14 +162,14 @@ class TestEcommerceDataTC(unittest.TestCase):
         patch_format):
         """
         Test get_test_case when called with invalid request parameters.
-        
+
         Ensures that no DB connection or query is attempted, and that
         the correct error message and BAD_REQUEST code are returned.
         """
         expected_code = StatusCode.BAD_REQUEST
         endpoint_error_msg = {
             '/test_case': "Missing id or testcase name",
-            '/test_case?id=1&name=test_case_dummy': \
+            '/test_case?id=1&name=test_case_dummy':
                 "You just can choose id or name, not both",
             '/test_case?id=test_case': "ID should be an integer",
             '/test_case?name=2': "Name should be a string"
@@ -181,8 +181,11 @@ class TestEcommerceDataTC(unittest.TestCase):
 
             patch_connect_db.assert_not_called()
             patch_queries.assert_not_called()
-            patch_format.assert_called_once_with({'message': error_msg}, status_code=expected_code)
-            
+            patch_format.assert_called_once_with(
+                {'message': error_msg},
+                status_code=expected_code
+            )
+ 
             data = resp.get_json()
             self.assertEqual(data.get('message'), error_msg)
             self.assertEqual(code, expected_code)
@@ -194,24 +197,29 @@ class TestEcommerceDataTC(unittest.TestCase):
     @patch.object(EcommerceDataTC, "format_response")
     @patch.object(EcommerceDataTC, "define_queries")
     @patch.object(EcommerceDataTC, "query")
-    def test_get_test_case_valid_requests(self, patch_connect_db, patch_queries, patch_format):
+    def test_get_test_case_valid_requests(
+        self,
+        patch_connect_db,
+        patch_queries,
+        patch_format):
         """
         Test get_test_case when called with valid id
         or name parameters.
-        
+
         Ensures that the query is constructed,
         the DB call is made, and the response
         is correctly formatted and returned with 200 OK.
         """
         expected_code = StatusCode.OK
         endpoint_response = {
-            '/test_case?id=1': \
+            '/test_case?id=1':
                 {'params': [{'timeout': 2}]},
-            '/test_case?name=test_timeout': \
+            '/test_case?name=test_timeout':
                 {'params': [{'timeout': 2}]},
         }
         patch_format.side_effect = self.mocking_format
-        patch_queries.return_value = 'select params from parameters where {column} = "{value}"'
+        patch_queries.return_value = \
+            'select params from parameters where {column} = "{value}"'
         for endpoint, response in endpoint_response.items():
             patch_connect_db.return_value = response
             patch_format.return_value = {'message': response}
@@ -237,11 +245,15 @@ class TestEcommerceDataTC(unittest.TestCase):
     @patch.object(EcommerceDataTC, "format_response")
     @patch.object(EcommerceDataTC, "define_queries")
     @patch.object(EcommerceDataTC, "query")
-    def test_get_test_case_raise_exception(self, query_connect_db, patch_queries, patch_format):
+    def test_get_test_case_raise_exception(
+        self,
+        query_connect_db,
+        patch_queries,
+        patch_format):
         """
         Test get_test_case when the underlying DB
         query raises an exception.
-        
+
         Simulates a MyslApiException and verifies
         that the method returns the correct error
         message and NOT_FOUND status code.
@@ -262,5 +274,8 @@ class TestEcommerceDataTC(unittest.TestCase):
             key='GET_TESTCASE_PARAMS'
         )
         data = resp.get_json()
-        self.assertEqual(data.get('message'), 'Unable find the desired test case')
+        self.assertEqual(
+            data.get('message'),
+            'Unable find the desired test case'
+        )
         self.assertEqual(code, expected_code)

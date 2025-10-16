@@ -6,7 +6,9 @@ import time
 import subprocess
 from enum import StrEnum
 
+
 class CompCmd(StrEnum):
+    """Docker compose commands"""
     UP = \
         'docker,compose,-f,{compose_path},up,-d'
     DOWN = \
@@ -66,8 +68,7 @@ class DockerCompose:
     def wait_for_container(
             self,
             container: str,
-            timeout: int = 45
-        ) -> bool:
+            timeout: int = 45) -> bool:
         """
         Poll a container's health status until it becomes healthy
             or timeout is reached.

@@ -8,11 +8,6 @@ permissions:
   contents: write
 
 jobs:
-  show-gihub-context:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Actual context values
-        run: echo "${{ toJson(github)}}"
   lint:
     uses: ./.github/workflows/run-flake8.yml
     with:

@@ -1,5 +1,24 @@
 
 services:
+  api:
+    build: .
+    image: myorg/ecommerce-data-tc:latest
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_HOST: "127.0.0.1"
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: testdb
+      MYSQL_PORT: 3307
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 15s
+      timeout: 3s
+      retries: 5
   db:
     image: mysql:8
     environment:

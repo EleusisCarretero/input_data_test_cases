@@ -43,7 +43,7 @@ class DockerCompose:
     def _convert_list(cmd, c=","):
         return cmd.split(c)
 
-    def init_docker_compose(self, timeout: int = 45):
+    def init_docker_compose(self, timeout: int = 60):
         """
         Start the Docker Compose environment in detached mode and
         wait for the database container to become healthy.
@@ -51,7 +51,7 @@ class DockerCompose:
         Args:
             timeout (int, optional): Maximum time in seconds
             to wait for the "my-db" container to reach a healthy state.
-            Defaults to 45.
+            Defaults to 60.
 
         Raises:
             subprocess.CalledProcessError:

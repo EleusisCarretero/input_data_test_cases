@@ -12,8 +12,8 @@ from typing import Any, Dict, List
 import pytest
 import yaml
 
-from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import (
-    EcommerceDataTC,
+from input_data_test_cases.mysql_api.ecommerce_data_test_cases import(
+    ecommerce_data_tc as ec_data
 )
 from test.integration_tests.docker_compose import DockerCompose
 
@@ -66,7 +66,7 @@ class TestEcommerceDataTCGetParams:
         """
         self.docker_compose_handler = DockerCompose("docker-compose.yaml")
         self.docker_compose_handler.init_docker_compose()
-        self.app = EcommerceDataTC(config=self.config)
+        self.app = ec_data.EcommerceDataTC(config=self.config)
         self.client = self.app.app.test_client()
         self.db_handler = self.app.db_handler
         self._init_database(

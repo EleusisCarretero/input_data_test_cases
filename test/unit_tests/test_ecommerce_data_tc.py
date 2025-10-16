@@ -8,8 +8,10 @@ from input_data_test_cases.base_api import StatusCode
 from input_data_test_cases.mysql_api.db_handler import (
     ConsultTableQuery,
     ModifyTableQuery)
-from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import (
-    EcommerceDataTC)
+from input_data_test_cases.mysql_api.ecommerce_data_test_cases import(
+    ecommerce_data_tc as ec_data
+)
+
 from input_data_test_cases.mysql_api.mysql_api import MyslApiException
 
 
@@ -37,7 +39,7 @@ class TestEcommerceDataTC(unittest.TestCase):
             'MYSQL_DB': 'fake_db',
             'MYSQL_PORT': 1111,
         }
-        self.api = EcommerceDataTC(config=config)
+        self.api = ec_data.EcommerceDataTC(config=config)
         self.app = self.api.app
         self.mock_db = mock_mysql
 
@@ -56,11 +58,11 @@ class TestEcommerceDataTC(unittest.TestCase):
         return jsonify(payload), status_code
 
     @patch.object(Flask, "add_url_rule")
-    @patch.object(EcommerceDataTC, "update_test_case")
-    @patch.object(EcommerceDataTC, "delete_test_case")
-    @patch.object(EcommerceDataTC, "post_test_case")
-    @patch.object(EcommerceDataTC, "get_test_case")
-    @patch.object(EcommerceDataTC, "home")
+    @patch.object(ec_data.EcommerceDataTC, "update_test_case")
+    @patch.object(ec_data.EcommerceDataTC, "delete_test_case")
+    @patch.object(ec_data.EcommerceDataTC, "post_test_case")
+    @patch.object(ec_data.EcommerceDataTC, "get_test_case")
+    @patch.object(ec_data.EcommerceDataTC, "home")
     def test_define_routes(
         self,
         patch_home,
@@ -109,7 +111,7 @@ class TestEcommerceDataTC(unittest.TestCase):
             any_order=False
         )
 
-    @patch.object(EcommerceDataTC, "format_response")
+    @patch.object(ec_data.EcommerceDataTC, "format_response")
     def test_home(self, patch_format):
         """
         Test the home endpoint ("/").
@@ -153,9 +155,9 @@ class TestEcommerceDataTC(unittest.TestCase):
             actual_query = self.api.define_queries(key)
             self.assertEqual(actual_query, expect_query)
 
-    @patch.object(EcommerceDataTC, "format_response")
-    @patch.object(EcommerceDataTC, "define_queries")
-    @patch.object(EcommerceDataTC, "connect_data_base")
+    @patch.object(ec_data.EcommerceDataTC, "format_response")
+    @patch.object(ec_data.EcommerceDataTC, "define_queries")
+    @patch.object(ec_data.EcommerceDataTC, "connect_data_base")
     def test_get_test_case_invalid_requests(
         self,
         patch_connect_db,
@@ -196,9 +198,9 @@ class TestEcommerceDataTC(unittest.TestCase):
             patch_connect_db.reset_mock()
             patch_queries.reset_mock()
 
-    @patch.object(EcommerceDataTC, "format_response")
-    @patch.object(EcommerceDataTC, "define_queries")
-    @patch.object(EcommerceDataTC, "query")
+    @patch.object(ec_data.EcommerceDataTC, "format_response")
+    @patch.object(ec_data.EcommerceDataTC, "define_queries")
+    @patch.object(ec_data.EcommerceDataTC, "query")
     def test_get_test_case_valid_requests(
         self,
         patch_connect_db,
@@ -245,9 +247,9 @@ class TestEcommerceDataTC(unittest.TestCase):
             patch_connect_db.reset_mock()
             patch_queries.reset_mock()
 
-    @patch.object(EcommerceDataTC, "format_response")
-    @patch.object(EcommerceDataTC, "define_queries")
-    @patch.object(EcommerceDataTC, "query")
+    @patch.object(ec_data.EcommerceDataTC, "format_response")
+    @patch.object(ec_data.EcommerceDataTC, "define_queries")
+    @patch.object(ec_data.EcommerceDataTC, "query")
     def test_get_test_case_raise_exception(
         self,
         query_connect_db,

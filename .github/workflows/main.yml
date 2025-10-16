@@ -25,33 +25,6 @@ jobs:
       file_under_test: test/unittest
       python-version: '3.11'
 
-  Results:
+  build:
     needs: [testing]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Update README with test result
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            let readme = fs.readFileSync('README.md', 'utf8');
-            const result = process.env.TEST_RESULT || '✅ Tests passed';
-            readme = readme.replace(
-              /(<!-- test-result-start -->)([\s\S]*?)(<!-- test-result-end -->)/s,
-              `$1\n${result}\n$3`
-            );
-            fs.writeFileSync('README.md', readme);
-
-      - name: Commit README
-        env:
-          BRANCH_NAME: ${{ github.ref_name }}
-        shell: bash
-        run: |
-          DATE=$(date "+%Y-%m-%d %H:%M:%S")
-          git add README.md
-          git -c user.name="github-actions[bot]" -c user.email="github-actions[bot]@users.noreply.github.com" \
-            commit -m "Update readme with last results. From $DATE" || echo "No changes to commit"
-          git push origin "HEAD:${BRANCH_NAME}"
-      - name: Show context
-        run: echo "Actual Commit:${{github.event.commits[0].message}}"
+    uses: ./.github/workflows/build_image.yml

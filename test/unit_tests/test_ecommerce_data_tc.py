@@ -5,7 +5,7 @@ import unittest
 from flask import Flask, jsonify
 from unittest.mock import patch, call, Mock
 from input_data_test_cases.base_api import StatusCode
-from input_data_test_cases.mysql_api.db_handler import(
+from input_data_test_cases.mysql_api.db_handler import (
     ConsultTableQuery,
     ModifyTableQuery)
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import (
@@ -26,7 +26,7 @@ class TestEcommerceDataTC(unittest.TestCase):
     def setUp(self, mock_mysql):
         """
         Set up the test environment before each test case.
-        
+
         Patches the MySQL dependency, initializes an EcommerceDataTC
         instance with a fake config, and prepares the Flask app.
         """
@@ -73,7 +73,7 @@ class TestEcommerceDataTC(unittest.TestCase):
         """
         Test that API routes are defined correctly in the Flask app.
 
-        Verifies that each route is registered with the expected 
+        Verifies that each route is registered with the expected
         endpoint, view function, and HTTP method.
         """
         self.api.define_routes()
@@ -187,7 +187,7 @@ class TestEcommerceDataTC(unittest.TestCase):
                 {'message': error_msg},
                 status_code=expected_code
             )
- 
+
             data = resp.get_json()
             self.assertEqual(data.get('message'), error_msg)
             self.assertEqual(code, expected_code)

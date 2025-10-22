@@ -22,5 +22,4 @@ def load_mysql_config(mode: str) -> dict:
 
 mode = os.getenv("DB_MODE", "remote")
 
-app = EcommerceDataTC(load_mysql_config(mode)).app  # <- importante: exponer "app"
-
+app = EcommerceDataTC(load_mysql_config(mode)).app

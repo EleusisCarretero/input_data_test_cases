@@ -3,8 +3,10 @@ Docker compose class
 """
 import os
 import time
+import yaml
 import subprocess
 from enum import StrEnum
+from typing import Dict, Any
 
 
 class CompCmd(StrEnum):
@@ -40,10 +42,10 @@ class DockerCompose:
         self.compose_path = os.path.abspath(docker_compose_file)
 
     @staticmethod
-    def _convert_list(cmd, c=","):
+    def _convert_list(cmd, c=",") -> str:
         return cmd.split(c)
 
-    def init_docker_compose(self, timeout: int = 60):
+    def init_docker_compose(self, timeout: int = 60) -> None:
         """
         Start the Docker Compose environment in detached mode and
         wait for the database container to become healthy.
@@ -66,10 +68,7 @@ class DockerCompose:
         )
         self.wait_for_container("my-db", timeout)
 
-    def wait_for_container(
-            self,
-            container: str,
-            timeout: int = 45) -> bool:
+    def wait_for_container(self, container: str, timeout: int = 45) -> bool:
         """
         Poll a container's health status until it becomes healthy
             or timeout is reached.
@@ -96,7 +95,7 @@ class DockerCompose:
             time.sleep(1)
         raise TimeoutError(f"{container} is not healthy on time")
 
-    def down_docker_compose(self):
+    def down_docker_compose(self) -> None:
         """
         Stop and remove the Docker Compose environment, including containers,
         networks, and volumes defined in the compose file.
@@ -119,3 +118,21 @@ class DockerCompose:
             name (str): The attribute name being deleted.
         """
         self.down_docker_compose()
+
+
+def import_test_data(base_path, test_data_file: str) -> Dict[str, Any]:
+        """
+        Load and parse the YAML file containing test data.
+
+        Args:
+            test_data_file: File name of the YAML
+            file (relative to this directory).
+
+        Returns:
+            Dictionary with database config,
+            table name, and seed data.
+        """
+        full_path = os.path.join(base_path, test_data_file)
+        with open(full_path, "r", encoding="utf-8") as f:
+            data = yaml.safe_load(f)
+        return data

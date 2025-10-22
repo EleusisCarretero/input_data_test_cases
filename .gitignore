@@ -7,4 +7,5 @@ result.log
 # Python Caches
 __pycache__/
 *.py[cod]
+.env.*
 

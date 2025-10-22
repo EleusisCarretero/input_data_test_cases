@@ -2,20 +2,15 @@
 services:
   api:
     build: .
-    image: myorg/ecommerce-data-tc:latest
+    image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:sha-90ad2572ff81905d4de1bc044173643529727583
+    env_file: .env.local
     depends_on:
       db:
         condition: service_healthy
-    environment:
-      MYSQL_HOST: "127.0.0.1"
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_DB: testdb
-      MYSQL_PORT: 3307
     ports:
       - "8000:8000"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
       interval: 15s
       timeout: 3s
       retries: 5

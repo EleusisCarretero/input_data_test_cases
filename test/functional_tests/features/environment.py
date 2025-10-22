@@ -62,9 +62,6 @@ def before_all(context):
     context.session = requests.Session()
     context.logger.info("Environment setup completed successfully.")
 
-    # Base url
-    context.BASE_URL = context.config.userdata.get("BASE_URL").rstrip("/")
-
 
 def after_all(context):
     """

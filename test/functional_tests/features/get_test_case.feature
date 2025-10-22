@@ -6,7 +6,12 @@ Feature: API availability and test case retrieval
   Background:
     Given The API has been launched
 
-  Scenario: Get parameters for an existing test case id
-    When I request test case parameters using id 1
+  Scenario Outline: Get parameters for multiple test case ids
+    When I request test case parameters using id <id>
     Then I receive a positive response for my GET request
     And the test case parameters are present in the response
+
+    Examples:
+    | id |
+    |  1 |
+    | 2 |

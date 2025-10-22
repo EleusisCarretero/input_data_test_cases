@@ -5,7 +5,6 @@ Includes:
 - Checking API availability
 - Retrieving test case parameters by id
 """
-
 from behave import given, when, then
 
 
@@ -20,8 +19,8 @@ def step_check_api_is_up(context):
     - `context.result`: helper for safe assertions and checks
     """
     context.logger.info("Checking if the server is up")
-
-    url = context.config.userdata.get("BASE_URL")
+    # Base url
+    url = context.config.userdata.get("BASE_URL").rstrip("/")
     response = context.result.check_not_raises_any_exception(
         context.session.request,
         "Check API is up",
@@ -34,7 +33,7 @@ def step_check_api_is_up(context):
         expected_value=200,
         step_msg="Verify server health check",
     )
-
+    context.BASE_URL = url
 
 @when("I request test case parameters using id {testcase_id:d}")
 def step_get_testcase_by_id(context, testcase_id: int):
@@ -89,6 +88,3 @@ def step_check_testcase_params(context):
         expected_value=None,
         step_msg="Empty or missing JSON payload"
     )
-    # Optional: validate minimal shape of the payload
-    # Example:
-    # assert "id" in data and "params" in data, f"Unexpected payload: {data}"

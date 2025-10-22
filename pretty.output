@@ -4,9 +4,15 @@ Feature: API availability and test case retrieval # test/functional_tests/featur
   So that I can successfully retrieve test case parameters
   Feature: API availability and test case retrieval  # test/functional_tests/features/get_test_case.feature:1
 
-  Scenario: Get parameters for an existing test case id      # test/functional_tests/features/get_test_case.feature:9
-    Given The API has been launched                          # test/functional_tests/features/steps/steps_get_test_case.py:12
-    When I request test case parameters using id 1           # test/functional_tests/features/steps/steps_get_test_case.py:39
-    Then I receive a positive response for my GET request    # test/functional_tests/features/steps/steps_get_test_case.py:70
-    And the test case parameters are present in the response # test/functional_tests/features/steps/steps_get_test_case.py:81
+  Scenario Outline: Get parameters for multiple test case ids -- @1.1   # test/functional_tests/features/get_test_case.feature:16
+    Given The API has been launched                                     # test/functional_tests/features/steps/steps_get_test_case.py:12
+    When I request test case parameters using id 1                      # test/functional_tests/features/steps/steps_get_test_case.py:39
+    Then I receive a positive response for my GET request               # test/functional_tests/features/steps/steps_get_test_case.py:70
+    And the test case parameters are present in the response            # test/functional_tests/features/steps/steps_get_test_case.py:81
+
+  Scenario Outline: Get parameters for multiple test case ids -- @1.2   # test/functional_tests/features/get_test_case.feature:17
+    Given The API has been launched                                     # test/functional_tests/features/steps/steps_get_test_case.py:12
+    When I request test case parameters using id 2                      # test/functional_tests/features/steps/steps_get_test_case.py:39
+    Then I receive a positive response for my GET request               # test/functional_tests/features/steps/steps_get_test_case.py:70
+    And the test case parameters are present in the response            # test/functional_tests/features/steps/steps_get_test_case.py:81
 

@@ -1,0 +1,12 @@
+Feature: API availability and test case retrieval # test/functional_tests/features/get_test_case.feature:1
+  As a consumer of the API
+  I want to verify the service is reachable
+  So that I can successfully retrieve test case parameters
+  Feature: API availability and test case retrieval  # test/functional_tests/features/get_test_case.feature:1
+
+  Scenario: Get parameters for an existing test case id      # test/functional_tests/features/get_test_case.feature:9
+    Given The API has been launched                          # test/functional_tests/features/steps/steps_get_test_case.py:12
+    When I request test case parameters using id 1           # test/functional_tests/features/steps/steps_get_test_case.py:39
+    Then I receive a positive response for my GET request    # test/functional_tests/features/steps/steps_get_test_case.py:70
+    And the test case parameters are present in the response # test/functional_tests/features/steps/steps_get_test_case.py:81
+

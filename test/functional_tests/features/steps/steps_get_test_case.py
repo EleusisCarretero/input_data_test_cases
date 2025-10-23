@@ -8,6 +8,51 @@ Includes:
 from behave import given, when, then
 
 
+def by_parameter_decorator(func):
+    """
+    Decorator for Behave step functions that automatically performs
+    a GET request to BASE_URL/TESTCASE_ENDPOINT using parameters returned by the step.
+
+    The decorated function must return a dict of query parameters.
+    Example:
+
+        @when("I request test case by id {testcase_id:d}")
+        @by_parameter_decorator
+        def step_get_test_case(context, testcase_id):
+            return {"id": testcase_id}
+    """
+
+    def wrapper(context, *args, **kwargs):
+        base_url = context.config.userdata.get("BASE_URL", "").rstrip("/")
+        endpoint = context.config.userdata.get("TESTCASE_ENDPOINT", "").strip("/")
+        if not base_url or not endpoint:
+            raise RuntimeError("Missing BASE_URL or TESTCASE_ENDPOINT in userdata")
+        url = f"{base_url}/{endpoint}"
+        params = func(context, *args, **kwargs)
+        if not isinstance(params, dict):
+            raise TypeError(f"Expected dict from {func.__name__}, got {type(params).__name__}")
+
+        context.logger.info(f"Requesting {url} with params={params}")
+        response = context.result.check_not_raises_any_exception(
+            context.session.request,
+            f"GET {endpoint} by {','.join(params.keys())}",
+            "GET",
+            url,
+            params=params,
+        )
+        context.response = response
+        context.status_code = response.status_code
+        context.test_case_params = context.result.check_not_raises_any_exception(
+            response.json,
+            "Validate response JSON",
+        )
+
+        return response
+
+    return wrapper
+
+
+
 @given("The API has been launched")
 def step_check_api_is_up(context):
     """
@@ -36,6 +81,7 @@ def step_check_api_is_up(context):
     context.BASE_URL = url
 
 @when("I request test case parameters using id {testcase_id:d}")
+@by_parameter_decorator
 def step_get_testcase_by_id(context, testcase_id: int):
     """
     Performs a GET request to retrieve test case parameters.
@@ -46,25 +92,21 @@ def step_get_testcase_by_id(context, testcase_id: int):
     - `context.status_code`
     - `context.test_case_params`
     """
-    endpoint = context.config.userdata.get("TESTCASE_ENDPOINT").rstrip("/")
-    url = f"{context.BASE_URL}/{endpoint}"
-    params = {"id": testcase_id}
+    return {"id": testcase_id}
 
-    response = context.result.check_not_raises_any_exception(
-        context.session.request,
-        "GET test_case by id",
-        "GET",
-        url,
-        params=params,
-    )
+@when("I request test case parameters using test case name {testcase_name}")
+@by_parameter_decorator
+def step_get_testcase_by_name(context, testcase_name: str):
+    """
+    Performs a GET request to retrieve test case parameters.
 
-    context.test_case_params = context.result.check_not_raises_any_exception(
-        response.json,
-        f"Response is not valid JSON: {response.text[:300]}"
-    )
-
-    context.response = response
-    context.status_code = response.status_code
+    :param testcase_name: Name of the existing test case (int)
+    Stores results in:
+    - `context.response`
+    - `context.status_code`
+    - `context.test_case_params`
+    """
+    return {"name": testcase_name}
 
 @then("I receive a positive response for my GET request")
 def step_check_http_status_code(context):
@@ -74,7 +116,7 @@ def step_check_http_status_code(context):
     context.result.check_equals_to(
         actual_value=context.status_code,
         expected_value=200,
-        step_msg=f"HTTP status was {context.status_code}"
+        step_msg=f"Check HTTP status was {context.status_code}"
     )
 
 @then("the test case parameters are present in the response")
@@ -86,5 +128,6 @@ def step_check_testcase_params(context):
     context.result.check_not_equals_to(
         actual_value=data,
         expected_value=None,
-        step_msg="Empty or missing JSON payload"
+        step_msg="Check is not Empty or missing JSON payload"
     )
+

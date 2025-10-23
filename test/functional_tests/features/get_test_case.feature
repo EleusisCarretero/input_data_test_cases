@@ -14,4 +14,14 @@ Feature: API availability and test case retrieval
     Examples:
     | id |
     |  1 |
-    | 2 |
+    | 2  |
+
+  Scenario Outline: Get parameters for multiple test case ids
+    When I request test case parameters using test case name <name>
+    Then I receive a positive response for my GET request
+    And the test case parameters are present in the response
+
+    Examples:
+    |       name              |
+    |  test_case_dummy        |
+    |  test_case_login_dummy  |

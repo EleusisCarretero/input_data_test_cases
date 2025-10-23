@@ -2,11 +2,15 @@
 Docker compose class
 """
 import os
+import json
 import time
 import yaml
+import requests
 import subprocess
 from enum import StrEnum
+from result import Ok, Err, as_result
 from typing import Dict, Any
+from requests.exceptions import ConnectionError, JSONDecodeError, Timeout
 
 
 class CompCmd(StrEnum):
@@ -45,7 +49,7 @@ class DockerCompose:
     def _convert_list(cmd, c=",") -> str:
         return cmd.split(c)
 
-    def init_docker_compose(self, timeout: int = 60) -> None:
+    def init_docker_compose(self, timeout: int = 80) -> None:
         """
         Start the Docker Compose environment in detached mode and
         wait for the database container to become healthy.
@@ -53,7 +57,7 @@ class DockerCompose:
         Args:
             timeout (int, optional): Maximum time in seconds
             to wait for the "my-db" container to reach a healthy state.
-            Defaults to 60.
+            Defaults to 80.
 
         Raises:
             subprocess.CalledProcessError:
@@ -68,7 +72,7 @@ class DockerCompose:
         )
         self.wait_for_container("my-db", timeout)
 
-    def wait_for_container(self, container: str, timeout: int = 45) -> bool:
+    def wait_for_container(self, container: str, timeout: int = 60) -> bool:
         """
         Poll a container's health status until it becomes healthy
             or timeout is reached.
@@ -136,3 +140,27 @@ def import_test_data(base_path, test_data_file: str) -> Dict[str, Any]:
         with open(full_path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
         return data
+
+
+class RestAdapterException(Exception):
+    pass
+
+
+class RestAdapter:
+    def __init__(self):
+        self.session = requests.Session()
+    
+    @as_result(RestAdapterException)
+    def query(self, method, endpoint, params={}, payload=None):
+        try:
+            response = self.session.request(
+                method=method,
+                url=endpoint,
+                params=params,
+                json=json.dumps(payload)
+            )
+        except Exception as e:
+            raise RestAdapterException(f"Unable to get valid response due to: {str(e)}") from e
+        return response
+
+

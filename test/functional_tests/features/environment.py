@@ -13,12 +13,11 @@ The configuration is loaded from:
 """
 
 import os
-import requests
 from pathlib import Path
 
 from test_utils.logger_manager import LoggerManager
 from test_utils.result_manager import ResultManagerClass
-from test.utils.utils import DockerCompose, import_test_data
+from test.utils.utils import DockerCompose, RestAdapter, import_test_data
 from input_data_test_cases.mysql_api.db_handler import SQLDBHandler
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
 
@@ -59,7 +58,7 @@ def before_all(context):
     )
 
     # Initialize HTTP session
-    context.session = requests.Session()
+    context.session = RestAdapter()
     context.logger.info("Environment setup completed successfully.")
 
 
@@ -83,7 +82,7 @@ def after_all(context):
 
     # Close HTTP session
     if getattr(context, "session", None):
-        context.session.close()
+        context.session.session.close()
         context.logger.info("HTTP session closed.")
 
     context.logger.info("Environment teardown completed.")

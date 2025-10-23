@@ -5,6 +5,7 @@ Includes:
 - Checking API availability
 - Retrieving test case parameters by id
 """
+from result import is_ok
 from behave import given, when, then
 
 
@@ -28,31 +29,43 @@ def by_parameter_decorator(func):
         if not base_url or not endpoint:
             raise RuntimeError("Missing BASE_URL or TESTCASE_ENDPOINT in userdata")
         url = f"{base_url}/{endpoint}"
-        params = func(context, *args, **kwargs)
-        if not isinstance(params, dict):
-            raise TypeError(f"Expected dict from {func.__name__}, got {type(params).__name__}")
-
-        context.logger.info(f"Requesting {url} with params={params}")
-        response = context.result.check_not_raises_any_exception(
-            context.session.request,
-            f"GET {endpoint} by {','.join(params.keys())}",
-            "GET",
+        req_kwargs = {}
+        params_or_data, method = func(context, *args, **kwargs)
+        if not isinstance(params_or_data, dict):
+            raise TypeError(f"Expected dict from {func.__name__}, got {type(params_or_data).__name__}")
+        if method == "GET":
+            req_kwargs = {'params': params_or_data}
+            context.logger.info(f"Requesting {url} with params={params_or_data}")
+        elif method == "POST":
+            req_kwargs = {'payload': params_or_data}
+            context.logger.info(f"Requesting {url} with json={params_or_data}")
+        else:
+            pass
+        context.logger.info(f"Requesting {url} with params={params_or_data}")
+        result = context.result.check_not_raises_any_exception(
+            context.session.query,
+            f"{method} {endpoint} by {','.join(params_or_data.keys())}",
+            method,
             url,
-            params=params,
+            **req_kwargs,
         )
+        assert is_ok(result)
+        response = result.value
         context.response = response
         context.status_code = response.status_code
-        context.test_case_params = context.result.check_not_raises_any_exception(
-            response.json,
-            "Validate response JSON",
-        )
+        if method == "GET":
+            context.test_case_params = context.result.check_not_raises_any_exception(
+                response.json,
+                "Validate response JSON",
+            )
 
         return response
 
     return wrapper
 
-
-
+"""
+    Common through all api requests
+"""
 @given("The API has been launched")
 def step_check_api_is_up(context):
     """
@@ -66,13 +79,14 @@ def step_check_api_is_up(context):
     context.logger.info("Checking if the server is up")
     # Base url
     url = context.config.userdata.get("BASE_URL").rstrip("/")
-    response = context.result.check_not_raises_any_exception(
-        context.session.request,
+    result = context.result.check_not_raises_any_exception(
+        context.session.query,
         "Check API is up",
         "GET",
         url,
     )
-
+    assert is_ok(result)
+    response = result.value
     context.result.check_equals_to(
         actual_value=response.status_code,
         expected_value=200,
@@ -80,6 +94,9 @@ def step_check_api_is_up(context):
     )
     context.BASE_URL = url
 
+"""
+    Get request steps
+"""
 @when("I request test case parameters using id {testcase_id:d}")
 @by_parameter_decorator
 def step_get_testcase_by_id(context, testcase_id: int):
@@ -92,9 +109,10 @@ def step_get_testcase_by_id(context, testcase_id: int):
     - `context.status_code`
     - `context.test_case_params`
     """
-    return {"id": testcase_id}
+    return {"id": testcase_id}, "GET"
 
 @when("I request test case parameters using test case name {testcase_name}")
+@then("I request test case parameters using test case name {testcase_name}")
 @by_parameter_decorator
 def step_get_testcase_by_name(context, testcase_name: str):
     """
@@ -106,7 +124,7 @@ def step_get_testcase_by_name(context, testcase_name: str):
     - `context.status_code`
     - `context.test_case_params`
     """
-    return {"name": testcase_name}
+    return {"name": testcase_name}, "GET"
 
 @then("I receive a positive response for my GET request")
 def step_check_http_status_code(context):
@@ -131,3 +149,31 @@ def step_check_testcase_params(context):
         step_msg="Check is not Empty or missing JSON payload"
     )
 
+"""
+    Post requests steps
+"""
+
+@when("I request to add a new test case {test_case} parameters {parameters}")
+@by_parameter_decorator
+def step_add_new_test_case(context, test_case:str, parameters):
+    return {'name': test_case, 'params': parameters}, "POST"
+
+@then("I receive a positive response for my POST request")
+def step_check_http_status_code(context):
+    """
+    Verifies that the HTTP response code equals 201.
+    """
+    context.result.check_equals_to(
+        actual_value=context.status_code,
+        expected_value=201,
+        step_msg=f"Check HTTP status was {context.status_code}"
+    )
+
+@then("the parameters {parameters} are the same I request to add")
+def step_check_parameters(context, parameters:str):
+    data = getattr(context, "test_case_params", None)
+    context.result.check_equals_to(
+        actual_value=data,
+        expected_value=parameters,
+        step_msg=f"Check the test cases parameters are the same"
+    )

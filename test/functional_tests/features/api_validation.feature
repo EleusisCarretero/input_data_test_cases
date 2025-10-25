@@ -13,7 +13,7 @@ Feature: API availability and test case retrieval
 
     Examples:
     | id |
-    |  1 |
+    | 1  |
     | 2  |
 
   Scenario Outline: Get parameters for multiple test case names

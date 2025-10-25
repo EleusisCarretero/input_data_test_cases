@@ -95,13 +95,16 @@ class SQLDBHandler():
         for i, column in enumerate(columns):
             cmd = " ".join([column['name'], column['type']])
             if column['type'].upper() == 'VARCHAR':
-                cmd= f"{cmd}({column.get('length', 255)})"
-            if column.get('primary', False):
-                cmd+= ' PRIMARY KEY'
-            if i < len(columns) - 1:
-                columns_to_insert += cmd + "," 
+                columns_to_insert += f"{cmd}({column.get('length', 255)})"
             else:
                 columns_to_insert += cmd
+            if column.get('auto_increment', False):
+                columns_to_insert += ' auto_increment'
+            if column.get('primary', False):
+                columns_to_insert += ' PRIMARY KEY'
+            if i < len(columns) - 1:
+                columns_to_insert += ","
+            
         self.modify_table(
             base_query=ModifyTableQuery.CREATE_TABLE_BASE_QUERY,
             kwargs={'table_name':table_name, 'columns_to_insert':columns_to_insert},

@@ -11,6 +11,7 @@ table:
     - name: id
       type: int
       primary: true
+      auto_increment: true
     - name: name
       type: VARCHAR
       length: 255
@@ -19,15 +20,27 @@ table:
 
 init_values:
   data:
-    - id: 1
-      name: test_case_dummy
+    - name: test_case_dummy
       params:
         - timeout: 10
         - timeout: 20
-    - id: 2
-      name: test_case_login_dummy
+    - name: test_case_login_dummy
       params:
         - user: John123
           password: 123
         - user: panfilo
           password: wiek7
+    - name: test_case_cart
+      params:
+        - article: T-shirt
+          expected_price: 500
+          expected_quantity: 51
+        - article: Pats
+          expected_price: 800
+          expected_quantity: 40
+        - article: Shorts
+          expected_price: 300
+          expected_quantity: 8
+        - article: Jacket
+          expected_price: 1500
+          expected_quantity: 9

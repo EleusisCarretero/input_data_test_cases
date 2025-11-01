@@ -4,6 +4,9 @@ inputs:
   python-version:
     required: false
     default: '3.11'
+  env:
+    required: true
+    default: 'api'
 
 runs:
   using: composite
@@ -13,9 +16,18 @@ runs:
       with:
         python-version: ${{ inputs['python-version'] }}
 
-    - name: Install dependencies
+    - name: Install API dependencies
       shell: bash
+      if: inputs.env == 'api'
       run: |
         python -m pip install --upgrade pip
         python -m venv venv
         pip install -r requirements.txt
+
+    - name: Install Test dependencies
+      shell: bash
+      if: inputs.env == 'test'
+      run: |
+        python -m pip install --upgrade pip
+        python -m venv venv
+        pip install -r test_requirements.txt

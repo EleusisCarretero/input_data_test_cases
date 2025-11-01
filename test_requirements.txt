@@ -1,0 +1,7 @@
+pytest
+behave
+PyYAML
+flask
+flask_mysqldb
+flask_sqlalchemy
+git+https://github.com/EleusisCarretero/test_utils.git@main

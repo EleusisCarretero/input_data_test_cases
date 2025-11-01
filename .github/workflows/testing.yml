@@ -18,6 +18,7 @@ jobs:
       - uses: ./.github/actions/setup-common-env
         with:
           python-version: '3.11'
+          env: 'test'
 
       - name: ⚒️ Execute Unit-Test
         shell: bash

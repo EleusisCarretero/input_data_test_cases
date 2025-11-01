@@ -1,4 +1,3 @@
-.[api]
 flask
 flask_mysqldb
 flask_sqlalchemy

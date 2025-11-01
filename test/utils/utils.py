@@ -157,7 +157,7 @@ class RestAdapter:
                 method=method,
                 url=endpoint,
                 params=params,
-                json=json.dumps(payload)
+                json=payload
             )
         except Exception as e:
             raise RestAdapterException(f"Unable to get valid response due to: {str(e)}") from e

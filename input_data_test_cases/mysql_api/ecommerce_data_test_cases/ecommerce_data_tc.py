@@ -80,10 +80,13 @@ class EcommerceDataTC(MysqlApi):
         return self.format_response(response, status_code=status_code)
 
     def post_test_case(self):
-        raw_data = request.data
-        data = json.loads(raw_data)
-        name = data.get('name', None)
-        params = data.get('params', None)
+        if request.is_json:
+            data = request.get_json()
+            name = data.get('name', None)
+            params = json.dumps(data.get('params', None))
+        else:
+            name = request.form.get('name', None)
+            params = request.form.get('params', None)
         if name is None or params is None:
             return self.format_response({'message': 'Missing arguments'}, status_code=StatusCode.BAD_REQUEST)
         columns = "name, params"
@@ -143,12 +146,22 @@ class EcommerceDataTC(MysqlApi):
 
 
 if __name__ == "__main__":
-    config = {
-        'MYSQL_HOST': "shuttle.proxy.rlwy.net",
-        'MYSQL_USER': "root",
-        'MYSQL_PASSWORD': "EdUDAyFiRRaDKBjPKHwBCXbelEChMHES",
-        'MYSQL_DB': "railway",
-        'MYSQL_PORT':28374
-    }
+    debug = True
+    if not debug:
+        config = {
+            'MYSQL_HOST': "shuttle.proxy.rlwy.net",
+            'MYSQL_USER': "root",
+            'MYSQL_PASSWORD': "EdUDAyFiRRaDKBjPKHwBCXbelEChMHES",
+            'MYSQL_DB': "railway",
+            'MYSQL_PORT':28374
+        }
+    else:
+        config = {
+            'MYSQL_HOST': "localhost",
+            'MYSQL_USER': "root",
+            'MYSQL_PASSWORD': "eleusis95",
+            'MYSQL_DB': "local_db_tc_params",
+            'MYSQL_PORT':3306
+        }
     mysqlapi = EcommerceDataTC(config=config)
     mysqlapi.run(debug=True)

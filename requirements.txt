@@ -7,4 +7,4 @@ PyYAML
 behave
 waitress; sys_platform == "win32"
 gunicorn; sys_platform == "linux"
-https://github.com/EleusisCarretero/test_utils.git@main
+git+https://github.com/EleusisCarretero/test_utils.git@main

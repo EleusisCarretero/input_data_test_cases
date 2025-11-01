@@ -60,7 +60,18 @@ def before_all(context):
     # Initialize HTTP session
     context.session = RestAdapter()
     context.logger.info("Environment setup completed successfully.")
+    # Global Constants
+    context.custom_tags = {}
 
+def before_tag(context, tag):
+    if '=' in tag:
+        context.logger.info(f"Custom tag {tag}")
+        value, key = tag.split('=')
+        context.custom_tags.update({value: key})
+
+def before_feature(context, feature):
+    # Get tags
+    context.timeout = int(context.custom_tags.get('timeout', 5))
 
 def after_all(context):
     """

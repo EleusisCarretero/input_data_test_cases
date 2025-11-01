@@ -2,7 +2,7 @@
 services:
   api:
     build: .
-    image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:sha-90ad2572ff81905d4de1bc044173643529727583
+    image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:sha-369f9d3bb9baedcff37c579888b8049c9967a3e7
     env_file: .env.local
     depends_on:
       db:

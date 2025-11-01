@@ -1,3 +1,5 @@
+@smoke
+@timeout=60
 Feature: API availability and test case retrieval
   As a consumer of the API
   I want to verify the service is reachable
@@ -6,6 +8,7 @@ Feature: API availability and test case retrieval
   Background:
     Given The API has been launched
 
+  @tries=3
   Scenario Outline: Get parameters for multiple test case ids
     When I request test case parameters using id <id>
     Then I receive a positive response for my GET request
@@ -32,6 +35,19 @@ Feature: API availability and test case retrieval
     And I request test case parameters using test case name <test_case>
     Then the test case parameters are present in the response
     And the parameters <parameters> are the same I request to add
+
+    Examples:
+    |    test_case           |              parameters               |
+    |  test_new_test_case    |  [{"timeout":"10"}, {"timeout":"20"}] |
+
+  Scenario Outline: Add a new test case and delete it
+    When I request to add a new test case <test_case> parameters <parameters>
+    Then I receive a positive response for my POST request
+    And I request test case parameters using test case name <test_case>
+    Then the test case parameters are present in the response
+    And the parameters <parameters> are the same I request to add
+    Then I request to delete the test case <test_case>
+    And I receive a positive response for my DELETE request
 
     Examples:
     |    test_case           |              parameters               |

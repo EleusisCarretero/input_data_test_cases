@@ -1,3 +1,4 @@
+import json
 from flask import request
 from functools import wraps
 from input_data_test_cases.base_api import StatusCode
@@ -79,8 +80,10 @@ class EcommerceDataTC(MysqlApi):
         return self.format_response(response, status_code=status_code)
 
     def post_test_case(self):
-        name = request.form.get('name', None)
-        params = request.form.get('params', None)
+        raw_data = request.data
+        data = json.loads(raw_data)
+        name = data.get('name', None)
+        params = data.get('params', None)
         if name is None or params is None:
             return self.format_response({'message': 'Missing arguments'}, status_code=StatusCode.BAD_REQUEST)
         columns = "name, params"

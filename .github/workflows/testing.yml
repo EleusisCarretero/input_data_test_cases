@@ -11,7 +11,7 @@ on:
         default: '3.11'
  
 jobs:
-  testing:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,3 +33,17 @@ jobs:
             echo "TEST_RESULT=❌ Tests failed" >> $GITHUB_ENV
           fi
           cat result.log
+
+  funtional-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-common-env
+        with:
+          python-version: '3.11'
+          env: 'test'
+        
+      - name: ⚒️ Execute Unit-Test
+        shell: bash
+        run: |
+          test\\functional_tests\\features -n Add a new test case and delete it

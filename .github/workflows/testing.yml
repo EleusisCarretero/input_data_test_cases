@@ -20,7 +20,7 @@ jobs:
           python-version: '3.11'
           env: 'test'
 
-      - name: ⚒️ Execute Unit-Test
+      - name: ⚒️ Execute Unit Testing
         shell: bash
         run: |
           pwd
@@ -34,7 +34,8 @@ jobs:
           fi
           cat result.log
 
-  funtional-test:
+  functional-test:
+    needs: [unit-test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +44,7 @@ jobs:
           python-version: '3.11'
           env: 'test'
         
-      - name: ⚒️ Execute Unit-Test
+      - name: ⚒️ Execute Functional Testing
         shell: bash
         run: |
           test\\functional_tests\\features -n Add a new test case and delete it

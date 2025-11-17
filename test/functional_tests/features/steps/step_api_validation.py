@@ -8,8 +8,7 @@ Includes:
 import time
 from result import is_ok
 from behave import given, when, then
-
-from input_data_test_cases.base_api import StatusCode  # Ensure 'behave' is installed: pip install behave
+from input_data_test_cases.base_api import StatusCode
 
 
 def by_parameter_decorator(func):
@@ -66,14 +65,16 @@ def by_parameter_decorator(func):
 
     return wrapper
 
+
 def check_status_code(context, expected, actual):
     context.result.check_equals_to(
         actual_value=actual,
         expected_value=expected,
         step_msg=f"Check HTTP status {actual} is equal {expected}"
     )
-# --------------  Common through all api requests  -------------
 
+
+# --------------  Common through all api requests  -------------
 @given("The API has been launched")
 def step_check_api_is_up(context):
     """
@@ -113,7 +114,6 @@ def step_check_api_is_up(context):
 
 
 # ------------------ Get request steps ------------------------
-
 @when("I request test case parameters using id {testcase_id:d}")
 @by_parameter_decorator
 def step_get_testcase_by_id(context, testcase_id: int):
@@ -127,6 +127,7 @@ def step_get_testcase_by_id(context, testcase_id: int):
     - `context.test_case_params`
     """
     return {"id": testcase_id}, "GET"
+
 
 @when("I request test case parameters using test case name {testcase_name}")
 @then("I request test case parameters using test case name {testcase_name}")
@@ -142,6 +143,7 @@ def step_get_testcase_by_name(context, testcase_name: str):
     - `context.test_case_params`
     """
     return {"name": testcase_name}, "GET"
+
 
 @then("I receive a positive response for my GET request")
 def step_check_successful_get_status_code(context):
@@ -167,12 +169,13 @@ def step_check_testcase_params(context):
         step_msg="Check is not Empty or missing JSON payload"
     )
 
-# ---------------- Post requests steps ------------------------------
 
+# ---------------- Post requests steps ------------------------------
 @when("I request to add a new test case {test_case} parameters {parameters}")
 @by_parameter_decorator
 def step_add_new_test_case(context, test_case:str, parameters):
     return {'name': test_case, 'params': parameters}, "POST"
+
 
 @then("I receive a positive response for my POST request")
 def step_check_successful_post_status_code(context):
@@ -185,6 +188,7 @@ def step_check_successful_post_status_code(context):
         actual=context.status_code
     )
 
+
 @then("the parameters {parameters} are the same I request to add")
 def step_check_parameters(context, parameters:str):
     data = getattr(context, "test_case_params", None)
@@ -195,10 +199,12 @@ def step_check_parameters(context, parameters:str):
         step_msg=f"Expected parameters: {parameters}, Actual parameters: {data}"
     )
 
+
 @then("I request to delete the test case {test_case}")
 @by_parameter_decorator
 def step_delete_test_case(context, test_case):
     return {'name': test_case}, "DELETE"
+
 
 @then("I receive a positive response for my DELETE request")
 def step_check_successful_delete_status_code(context):

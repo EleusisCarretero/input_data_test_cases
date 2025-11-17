@@ -14,11 +14,10 @@ The configuration is loaded from:
 
 import os
 from pathlib import Path
-
 from test_utils.logger_manager import LoggerManager
 from test_utils.result_manager import ResultManagerClass
-from test.utils.utils import DockerCompose, RestAdapter, import_test_data
 from input_data_test_cases.mysql_api.db_handler import SQLDBHandler
+from test.utils.utils import DockerCompose, RestAdapter, import_test_data
 from input_data_test_cases.mysql_api.ecommerce_data_test_cases.ecommerce_data_tc import EcommerceDataTC
 
 
@@ -63,15 +62,18 @@ def before_all(context):
     # Global Constants
     context.custom_tags = {}
 
+
 def before_tag(context, tag):
     if '=' in tag:
         context.logger.info(f"Custom tag {tag}")
         value, key = tag.split('=')
         context.custom_tags.update({value: key})
 
+
 def before_feature(context, feature):
     # Get tags
     context.timeout = int(context.custom_tags.get('timeout', 5))
+
 
 def after_all(context):
     """

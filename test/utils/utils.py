@@ -2,15 +2,13 @@
 Docker compose class
 """
 import os
-import json
 import time
 import yaml
 import requests
 import subprocess
 from enum import StrEnum
-from result import Ok, Err, as_result
+from result import as_result
 from typing import Dict, Any
-from requests.exceptions import ConnectionError, JSONDecodeError, Timeout
 
 
 class CompCmd(StrEnum):
@@ -149,7 +147,7 @@ class RestAdapterException(Exception):
 class RestAdapter:
     def __init__(self):
         self.session = requests.Session()
-    
+
     @as_result(RestAdapterException)
     def query(self, method, endpoint, params={}, payload=None):
         try:
@@ -160,7 +158,7 @@ class RestAdapter:
                 json=payload
             )
         except Exception as e:
-            raise RestAdapterException(f"Unable to get valid response due to: {str(e)}") from e
+            raise RestAdapterException(
+                f"Unable to get valid response due to: {str(e)}"
+            ) from e
         return response
-
-

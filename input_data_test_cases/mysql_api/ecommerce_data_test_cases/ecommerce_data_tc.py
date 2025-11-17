@@ -52,13 +52,16 @@ class EcommerceDataTC(MysqlApi):
         self.app.add_url_rule("/test_case",endpoint="delete_test_case",view_func=self.delete_test_case,methods=["DELETE"])
         self.app.add_url_rule("/test_case",endpoint="update_test_case",view_func=self.update_test_case,methods=["PUT"])
 
+        self.app.add_url_rule("/all_test_cases",endpoint="get_all_test_cases",view_func=self.get_all_test_cases,methods=["GET"])
+
 
     def define_queries(self, key):
         return {
             'GET_TESTCASE_PARAMS': ConsultTableQuery.WHERE_COLUMN_EQUALS,
             'POST_TESTCASE_PARAMS': ModifyTableQuery.INSERT_NEW_VALUE_BASE_QUERY,
             'DELETE_TEST_CASE': ModifyTableQuery.DELETE_VALUE_WHERE_COLUMN_EQUALS,
-            'UPDATE_TEST_CASE': ModifyTableQuery.UPDATE_VALUE_WHERE_COLUMN_EQUALS
+            'UPDATE_TEST_CASE': ModifyTableQuery.UPDATE_VALUE_WHERE_COLUMN_EQUALS,
+            'GET_ALL_TCS': ConsultTableQuery.GET_ALL_COLUMNS
         }.get(key, None)
 
     def home(self):
@@ -143,6 +146,20 @@ class EcommerceDataTC(MysqlApi):
             response = {'message': 'Unable deleted the desired test case'}
             status_code = StatusCode.NOT_FOUND
         return self.format_response(response, status_code=status_code)
+
+    def get_all_test_cases(self):
+        try:
+            base_query = self.define_queries(key='GET_ALL_TCS')
+            response = self.query(
+                base_query=base_query,
+                kwargs={'table_name': self.TABLE_NAME}
+            )
+            status_code = StatusCode.OK
+        except MyslApiException:
+            response = {'message': 'Unable to get all the test cases'}
+            status_code = StatusCode.NOT_FOUND
+        return self.format_response(response, status_code=status_code)
+
 
 
 if __name__ == "__main__":

@@ -12,7 +12,8 @@ class ModifyTableQuery(str, Enum):
 
 
 class ConsultTableQuery(str, Enum):
-    WHERE_COLUMN_EQUALS = 'select params from {table_name} where {column} = "{value}"',
+    WHERE_COLUMN_EQUALS = 'select params from {table_name} where {column} = "{value}"'
+    GET_ALL_COLUMNS = 'select * from {table_name}'
 
 
 class SQLDBHandlerException(Exception):
@@ -74,7 +75,7 @@ class SQLDBHandler():
             kwargs=kwargs,
             params=params
         )
-        return self.fetchone()
+        return self.fetchall()
 
     def _query_cmd(self, base_query, kwargs, params):
         query = base_query.format(**kwargs)

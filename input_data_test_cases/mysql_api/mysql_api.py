@@ -25,7 +25,6 @@ class MysqlApi(BaseApi):
             cursor.execute(command, extra)
         else:
             cursor.execute(command)
-        #data = cursor.fetchone()
         data= cursor.connection.commit()
         if not data:
             raise MyslApiException("Unable to execute command")

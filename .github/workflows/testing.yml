@@ -43,7 +43,9 @@ jobs:
         with:
           python-version: '3.11'
           env: 'test'
-        
+
+      - run: pip list
+
       - name: ⚒️ Execute Functional Testing
         shell: bash
         run: |

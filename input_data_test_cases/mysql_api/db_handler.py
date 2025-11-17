@@ -1,5 +1,6 @@
 import time
 import json
+import MySQLdb
 from enum import Enum
 from flask_mysqldb import MySQL
 
@@ -70,12 +71,15 @@ class SQLDBHandler():
         return self.rowcount()
     
     def consult_table(self, base_query:ConsultTableQuery, kwargs, params=()):
-        self._query_cmd(
-            base_query=base_query,
-            kwargs=kwargs,
-            params=params
-        )
-        return self.fetchall()
+        try:
+            self._query_cmd(
+                base_query=base_query,
+                kwargs=kwargs,
+                params=params
+            )
+            return self.fetchall()
+        except MySQLdb.OperationalError as e:
+            raise SQLDBHandlerException("Unable to perform research") from e
 
     def _query_cmd(self, base_query, kwargs, params):
         query = base_query.format(**kwargs)

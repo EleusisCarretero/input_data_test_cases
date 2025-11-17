@@ -3,7 +3,7 @@ from flask_mysqldb import MySQL
 import MySQLdb.cursors as mysql_c
 from abc import abstractmethod
 from input_data_test_cases.base_api import BaseApi
-from input_data_test_cases.mysql_api.db_handler import ConsultTableQuery, ModifyTableQuery, SQLDBHandler
+from input_data_test_cases.mysql_api.db_handler import ConsultTableQuery, ModifyTableQuery, SQLDBHandler, SQLDBHandlerException
 
 
 class MyslApiException(Exception):
@@ -36,22 +36,25 @@ class MysqlApi(BaseApi):
 
     def query(self, base_query, kwargs, params=()):
         response = None
-        if isinstance(base_query, ConsultTableQuery):
-            response = self.db_handler.consult_table(
-                base_query=base_query,
-                kwargs=kwargs,
-                params=params
+        try:
+            if isinstance(base_query, ConsultTableQuery):
+                response = self.db_handler.consult_table(
+                    base_query=base_query,
+                    kwargs=kwargs,
+                    params=params
+                    )
+                if response is None:
+                    raise MyslApiException("Unable to execute command")
+            elif isinstance(base_query, ModifyTableQuery):
+                response = self.db_handler.modify_table(
+                    base_query=base_query,
+                    kwargs=kwargs,
+                    params=params
                 )
-            if response is None:
-                raise MyslApiException("Unable to execute command")
-        elif isinstance(base_query, ModifyTableQuery):
-            response = self.db_handler.modify_table(
-                base_query=base_query,
-                kwargs=kwargs,
-                params=params
-            )
-            if response <= 0:
-                raise MyslApiException("Unable to create/delete")
-        else:
-            raise MyslApiException("Unknown query type")
-        return response
+                if response <= 0:
+                    raise MyslApiException("Unable to create/delete")
+            else:
+                raise MyslApiException("Unknown query type")
+            return response
+        except SQLDBHandlerException as e:
+            raise MyslApiException("Unknown query type") from e

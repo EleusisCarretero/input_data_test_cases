@@ -163,22 +163,25 @@ class EcommerceDataTC(MysqlApi):
 
 
 if __name__ == "__main__":
-    debug = True
+    debug = False
+    env = os.getenv("ENV", 'local')
+    env_file = f".env.{env}"
+    load_dotenv(env_file)
     if not debug:
         config = {
-            'MYSQL_HOST': "shuttle.proxy.rlwy.net",
-            'MYSQL_USER': "root",
-            'MYSQL_PASSWORD': "EdUDAyFiRRaDKBjPKHwBCXbelEChMHES",
-            'MYSQL_DB': "railway",
-            'MYSQL_PORT':28374
+            'MYSQL_HOST': os.getenv('BD_HOST'),
+            'MYSQL_USER': os.getenv('DB_USER'),
+            'MYSQL_PASSWORD': os.getenv('DB_PASS'),
+            'MYSQL_DB': "defaultdb",
+            'MYSQL_PORT': os.getenv('DB_PORT')
         }
     else:
         config = {
             'MYSQL_HOST': "localhost",
-            'MYSQL_USER': "root",
-            'MYSQL_PASSWORD': "eleusis95",
+            'MYSQL_USER': os.getenv('DB_USER'),
+            'MYSQL_PASSWORD': os.getenv('DB_PASS'),
             'MYSQL_DB': "local_db_tc_params",
-            'MYSQL_PORT':3306
+            'MYSQL_PORT': os.getenv('DB_PORT')
         }
     mysqlapi = EcommerceDataTC(config=config)
     mysqlapi.run(debug=True)

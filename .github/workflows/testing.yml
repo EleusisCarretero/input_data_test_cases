@@ -47,4 +47,4 @@ jobs:
       - name: ⚒️ Execute Functional Testing
         shell: bash
         run: |
-          behave test\\functional_tests\\features -n Add a new test case and delete it
+          behave test/functional_tests/features -n Add a new test case and delete it

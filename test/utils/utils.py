@@ -123,21 +123,21 @@ class DockerCompose:
 
 
 def import_test_data(base_path, test_data_file: str) -> Dict[str, Any]:
-        """
-        Load and parse the YAML file containing test data.
+    """
+    Load and parse the YAML file containing test data.
 
-        Args:
-            test_data_file: File name of the YAML
-            file (relative to this directory).
+    Args:
+        test_data_file: File name of the YAML
+        file (relative to this directory).
 
-        Returns:
-            Dictionary with database config,
-            table name, and seed data.
-        """
-        full_path = os.path.join(base_path, test_data_file)
-        with open(full_path, "r", encoding="utf-8") as f:
-            data = yaml.safe_load(f)
-        return data
+    Returns:
+        Dictionary with database config,
+        table name, and seed data.
+    """
+    full_path = os.path.join(base_path, test_data_file)
+    with open(full_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+    return data
 
 
 class RestAdapterException(Exception):

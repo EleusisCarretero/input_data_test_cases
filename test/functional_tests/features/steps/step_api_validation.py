@@ -173,7 +173,7 @@ def step_check_testcase_params(context):
 # ---------------- Post requests steps ------------------------------
 @when("I request to add a new test case {test_case} parameters {parameters}")
 @by_parameter_decorator
-def step_add_new_test_case(context, test_case:str, parameters):
+def step_add_new_test_case(context, test_case: str, parameters):
     return {'name': test_case, 'params': parameters}, "POST"
 
 
@@ -190,7 +190,7 @@ def step_check_successful_post_status_code(context):
 
 
 @then("the parameters {parameters} are the same I request to add")
-def step_check_parameters(context, parameters:str):
+def step_check_parameters(context, parameters: str):
     data = getattr(context, "test_case_params", None)
     context.logger.info(f"Actual parameters: {data}")
     context.result.check_equals_to(

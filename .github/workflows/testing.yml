@@ -60,7 +60,7 @@ jobs:
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           TESTING: ${{ secrets.TESTING }}
         run: |
-          echo "$DB_HOST"
+          echo "${DB_HOST}"
           echo "DB_USER_LEN=${#DB_USER}"
           echo "TESTING_LEN=${#TESTING}"
           docker compose up -d

@@ -2,6 +2,7 @@
 TestEcommerDataTC unit test
 """
 import unittest
+import xmlrunner
 from flask import Flask, jsonify
 from unittest.mock import patch, call, Mock
 from input_data_test_cases.base_api import StatusCode
@@ -285,3 +286,15 @@ class TestEcommerceDataTC(unittest.TestCase):
             'Unable find the desired test case'
         )
         self.assertEqual(code, expected_code)
+
+
+if __name__ == '__main__':
+    # Specify the output directory for the XML reports
+    output_dir = 'test-reports'
+    unittest.main(
+        testRunner=xmlrunner.XMLTestRunner(output=output_dir),
+        # Optional: hide options not applicable to xmlrunner from the help menu
+        failfast=False, buffer=False, catchbreak=False,
+        argv=['first-arg-is-ignored'], # Required to avoid issues with how unittest parses argv
+        exit=False # Prevents main from calling sys.exit
+    )

@@ -4,9 +4,9 @@ services:
     build: .
     image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:latest
     environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
     depends_on:
       db:
         condition: service_healthy

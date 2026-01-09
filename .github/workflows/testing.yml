@@ -58,7 +58,7 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          TESTING: ${{ secrets.TESTING }}
+          TESTING: ${{ vars.TESTING }}
         run: |
           echo "${DB_HOST}"
           echo "DB_USER_LEN=${#DB_USER}"

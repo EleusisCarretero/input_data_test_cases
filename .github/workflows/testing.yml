@@ -58,7 +58,10 @@ jobs:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: docker compose up -d
+        run: |
+          echo "DB_HOST_LEN=${#DB_HOST}"
+          echo "DB_USER_LEN=${#DB_USER}"
+          docker compose up -d
 
       - name: ⚒️ Execute Functional Testing
         shell: bash

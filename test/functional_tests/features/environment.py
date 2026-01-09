@@ -46,7 +46,7 @@ def before_all(context):
     env = context.config.userdata.get("env", "local")
     if env.lower() == "local":
         context.logger.info("Setting docker compose locally")
-        context.docker_compose_handler = DockerCompose("docker-compose.yaml")
+        context.docker_compose_handler = DockerCompose("docker-compose.override.yaml")
         context.logger.info("Starting Docker environment...")
         context.docker_compose_handler.init_docker_compose()
     else:

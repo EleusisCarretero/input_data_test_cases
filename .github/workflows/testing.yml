@@ -63,7 +63,7 @@ jobs:
           echo "${DB_HOST}"
           echo "DB_USER_LEN=${#DB_USER}"
           echo "TESTING_LEN=${#TESTING}"
-          docker compose up -d
+          docker compose -f docker-compose.yaml up -d
 
       - name: ⚒️ Execute Functional Testing
         shell: bash

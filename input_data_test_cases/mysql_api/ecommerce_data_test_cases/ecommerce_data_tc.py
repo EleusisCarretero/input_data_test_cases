@@ -1,6 +1,9 @@
+
+import os
 import json
 from flask import request
 from functools import wraps
+from dotenv import load_dotenv
 from input_data_test_cases.base_api import StatusCode
 from input_data_test_cases.mysql_api.db_handler import ConsultTableQuery, ModifyTableQuery
 from input_data_test_cases.mysql_api.mysql_api import MysqlApi, MyslApiException

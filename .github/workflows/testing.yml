@@ -62,7 +62,7 @@ jobs:
           echo "${DB_HOST}"
           echo "DB_USER_LEN=${#DB_USER}"
           echo "TESTING_LEN=${#TESTING}"
-          docker compose -f docker-compose.yaml up -d logs
+          docker compose logs -f docker-compose.yaml up -d
 
       - name: 🔍 List running containers
         run: docker ps -a

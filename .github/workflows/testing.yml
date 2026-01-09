@@ -68,7 +68,7 @@ jobs:
       - name: ⚒️ Execute Functional Testing
         shell: bash
         run: |
-          behave test/functional_tests/features -n "Add a new test case and delete it" -env=ci
+          behave test/functional_tests/features -n "Add a new test case and delete it" -D env=ci
 
       - name: Docker Down
         run: docker compose down

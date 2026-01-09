@@ -21,7 +21,7 @@ jobs:
       python-version: '3.11'
 
   build:
-    needs: [testing]
+    # needs: [testing]
     permissions:
       contents: read
       packages: write

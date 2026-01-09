@@ -56,5 +56,9 @@ jobs:
 
       - name: ⚒️ Execute Functional Testing
         shell: bash
+        env:
+          DB_HOST: ${{ secrets.DB_HOST }}
+          DB_USER: ${{ secrets.DB_USER }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         run: |
           behave test/functional_tests/features -n "Add a new test case and delete it"

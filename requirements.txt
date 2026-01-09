@@ -5,3 +5,5 @@ setuptools
 PyYAML
 waitress; sys_platform == "win32"
 gunicorn; sys_platform == "linux"
+unittest-xml-reporting
+python-dotenv

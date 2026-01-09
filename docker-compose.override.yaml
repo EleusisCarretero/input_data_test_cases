@@ -3,10 +3,7 @@ services:
   api:
     build: .
     image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:latest
-    environment:
-      DB_HOST: ${DB_HOST}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
+    env_file: .env.local
     depends_on:
       db:
         condition: service_healthy

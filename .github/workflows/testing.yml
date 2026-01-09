@@ -70,7 +70,7 @@ jobs:
           BASE_URL: ${{ vars.BASE_URL }}
           TESTCASE_ENDPOINT: ${{ vars.TESTCASE_ENDPOINT }}
         run: |
-          behave test/functional_tests/features -n "Add a new test case and delete it" -D env=ci -D BASE_URL=${BASE_URL} -D TESTCASE_ENDPOINT=${TESTCASE_ENDPOINT}
+          behave test/functional_tests/features -n "Add a new test case and delete it" -D env=ci -D BASE_URL=$BASE_URL -D TESTCASE_ENDPOINT=$TESTCASE_ENDPOINT
 
       - name: Docker Down
         run: docker compose down

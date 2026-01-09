@@ -43,9 +43,14 @@ def before_all(context):
     context.result = ResultManagerClass()
 
     # Initialize Docker environment
-    context.docker_compose_handler = DockerCompose("docker-compose.yaml")
-    context.logger.info("Starting Docker environment...")
-    context.docker_compose_handler.init_docker_compose()
+    env = context.config.userdata.get("env", "local")
+    if env.lower() == "local":
+        context.logger.info("Setting docker compose locally")
+        context.docker_compose_handler = DockerCompose("docker-compose.yaml")
+        context.logger.info("Starting Docker environment...")
+        context.docker_compose_handler.init_docker_compose()
+    else:
+        context.logger.info("Running CI")
 
     # Initialize test database
     context.logger.info("Setting up test database...")

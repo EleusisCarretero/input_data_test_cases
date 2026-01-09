@@ -53,12 +53,17 @@ jobs:
           env: 'test'
 
       - run: pip list
-
-      - name: ⚒️ Execute Functional Testing
-        shell: bash
+      - name: Docker up
         env:
           DB_HOST: ${{ secrets.DB_HOST }}
           DB_USER: ${{ secrets.DB_USER }}
           DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        run: docker compose up -d
+
+      - name: ⚒️ Execute Functional Testing
+        shell: bash
         run: |
-          behave test/functional_tests/features -n "Add a new test case and delete it"
+          behave test/functional_tests/features -n "Add a new test case and delete it" -env=ci
+
+      - name: Docker Down
+        run: docker compose down

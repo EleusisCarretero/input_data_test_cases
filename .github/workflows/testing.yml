@@ -72,7 +72,7 @@ jobs:
         run: |
           echo "BASE_URL=$BASE_URL"
           echo "TESTCASE_ENDPOINT=$TESTCASE_ENDPOINT"
-          behave test/functional_tests/features -n "Add a new test case and delete it" -D env=ci -D BASE_URL=$BASE_URL -D TESTCASE_ENDPOINT=$TESTCASE_ENDPOINT
+          behave test/functional_tests/features -n "Add a new test case and delete it" -D env=ci -D BASE_URL=http://localhost:8000/ -D TESTCASE_ENDPOINT=test_case
 
       - name: Docker Down
         run: docker compose down

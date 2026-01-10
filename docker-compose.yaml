@@ -7,9 +7,7 @@ services:
       DB_USER: ${DB_USER:?DB_USER missing}
       DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD missing}
       DB_PORT: ${DB_PORT:?DB_PORT missing}
-    depends_on:
-      db:
-        condition: service_healthy
+
     ports:
       - "8000:8000"
     healthcheck:

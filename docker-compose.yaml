@@ -5,7 +5,7 @@ services:
     environment:
       DB_HOST: ${DB_HOST:?DB_HOST missing}
       DB_USER: ${DB_USER:?DB_USER missing}
-      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD missing}
+      DB_PASS: ${DB_PASS:?DB_PASS missing}
       DB_PORT: ${DB_PORT:?DB_PORT missing}
 
     ports:

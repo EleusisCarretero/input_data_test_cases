@@ -57,9 +57,10 @@ jobs:
         env:
           DB_HOST: ${{ vars.DB_HOST }}
           DB_USER: ${{ vars.DB_USER }}
-          DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+          DB_PASS: ${{ vars.DB_PASS }}
           DB_PORT: ${{ vars.DB_PORT }}
         run: |
+          
           echo "${DB_HOST}"
           echo "${DB_PORT}"
           echo "DB_USER_LEN=${#DB_USER}"

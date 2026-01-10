@@ -63,10 +63,17 @@ jobs:
         env:
           DB_HOST: ${{ vars.DB_HOST }}
           DB_USER: ${{ vars.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
+          DB_PASS: ${{ vars.DB_PASS }}
           DB_PORT: ${{ vars.DB_PORT }}
           DB_NAME: ${{ vars.DB_NAME }}
         run: |
+          echo "${DB_HOST}"
+          echo "${DB_PASS}"
+          echo "${DB_PORT}"
+          echo "${DB_NAME}"
+          echo "${DB_USER}"
+          echo "DB_USER_LEN=${#DB_USER}"
+          echo "TESTING_LEN=${#TESTING}"
           docker compose -f docker-compose.yaml up -d
 
       - name: 🔍 List running containers
@@ -81,10 +88,12 @@ jobs:
         run: behave test/functional_tests/features -n "Add a new test case and delete it" -D env=ci -D BASE_URL=http://localhost:8000/ -D TESTCASE_ENDPOINT=test_case
 
       - name: Docker Down
-        env:
-          DB_HOST: ${{ vars.DB_HOST }}
-          DB_USER: ${{ vars.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
-          DB_PORT: ${{ vars.DB_PORT }}
-          DB_NAME: ${{ vars.DB_NAME }}
-        run: docker compose down
+        run: |
+          echo "${DB_HOST}"
+          echo "${DB_PASS}"
+          echo "${DB_PORT}"
+          echo "${DB_NAME}"
+          echo "${DB_USER}"
+          echo "DB_USER_LEN=${#DB_USER}"
+          echo "TESTING_LEN=${#TESTING}"
+          docker compose down

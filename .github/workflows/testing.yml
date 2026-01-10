@@ -61,13 +61,6 @@ jobs:
       - run: pip list
       - name: Docker up
         run: |
-          echo "${DB_HOST}"
-          echo "${DB_PASS}"
-          echo "${DB_PORT}"
-          echo "${DB_NAME}"
-          echo "${DB_USER}"
-          echo "DB_USER_LEN=${#DB_USER}"
-          echo "TESTING_LEN=${#TESTING}"
           docker compose -f docker-compose.yaml up -d
 
       - name: 🔍 List running containers

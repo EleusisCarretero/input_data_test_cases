@@ -1,12 +1,12 @@
 
 services:
   api:
-    build: .
     image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:latest
     environment:
       DB_HOST: ${DB_HOST:?DB_HOST missing}
       DB_USER: ${DB_USER:?DB_USER missing}
       DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD missing}
+      DB_PORT: ${DB_PORT:?DB_PORT missing}
     depends_on:
       db:
         condition: service_healthy
@@ -17,17 +17,3 @@ services:
       interval: 15s
       timeout: 3s
       retries: 5
-  db:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: testdb
-    container_name: my-db
-    ports:
-      - "127.0.0.1:3307:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-proot"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-  

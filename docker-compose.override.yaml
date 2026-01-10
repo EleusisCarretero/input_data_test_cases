@@ -1,7 +1,6 @@
 
 services:
   api:
-    build: .
     image: ghcr.io/eleusiscarretero/input_data_test_cases/input_data_test_cases:latest
     env_file:
       - .env.local

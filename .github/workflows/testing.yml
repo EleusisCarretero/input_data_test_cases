@@ -59,6 +59,7 @@ jobs:
           DB_USER: ${{ vars.DB_USER }}
           DB_PASS: ${{ vars.DB_PASS }}
           DB_PORT: ${{ vars.DB_PORT }}
+          DB_NAME: ${{ vars.DB_NAME }}
         run: |
           
           echo "${DB_HOST}"

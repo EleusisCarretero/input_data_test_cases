@@ -49,17 +49,17 @@ def before_all(context):
         context.docker_compose_handler = DockerCompose("docker-compose.override.yaml")
         context.logger.info("Starting Docker environment...")
         context.docker_compose_handler.init_docker_compose()
+
+        # Initialize test database
+        context.logger.info("Setting up test database...")
+        db_client = EcommerceDataTC(config=db_config).client
+        context.db_handler = SQLDBHandler(engine=db_client)
+        context.db_handler.init_database(
+            table=test_data["table"],
+            data=test_data["init_values"]["data"],
+        )
     else:
         context.logger.info("Running CI")
-
-    # Initialize test database
-    context.logger.info("Setting up test database...")
-    db_client = EcommerceDataTC(config=db_config).client
-    context.db_handler = SQLDBHandler(engine=db_client)
-    context.db_handler.init_database(
-        table=test_data["table"],
-        data=test_data["init_values"]["data"],
-    )
 
     # Initialize HTTP session
     context.session = RestAdapter()

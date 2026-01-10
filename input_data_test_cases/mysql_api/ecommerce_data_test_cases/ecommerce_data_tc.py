@@ -167,7 +167,7 @@ class EcommerceDataTC(MysqlApi):
 
 if __name__ == "__main__":
     debug = False
-    env = os.getenv("ENV", 'local')
+    env = os.getenv("ENV", 'remote')
     env_file = f".env.{env}"
     load_dotenv(env_file)
     if not debug:
@@ -176,7 +176,7 @@ if __name__ == "__main__":
             'MYSQL_USER': os.getenv('DB_USER'),
             'MYSQL_PASSWORD': os.getenv('DB_PASS'),
             'MYSQL_DB': "defaultdb",
-            'MYSQL_PORT': os.getenv('DB_PORT')
+            'MYSQL_PORT': int(os.getenv('DB_PORT'))
         }
     else:
         config = {

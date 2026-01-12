@@ -169,10 +169,12 @@ if __name__ == "__main__":
     debug = False
     env = os.getenv("ENV", 'remote')
     env_file = f".env.{env}"
+    print(f"Env file set: {env_file}")
     load_dotenv(env_file)
     if not debug:
+        print("Remote setting selected")
         config = {
-            'MYSQL_HOST': os.getenv('BD_HOST'),
+            'MYSQL_HOST': os.getenv('DB_HOST'),
             'MYSQL_USER': os.getenv('DB_USER'),
             'MYSQL_PASSWORD': os.getenv('DB_PASS'),
             'MYSQL_DB': "defaultdb",
@@ -186,5 +188,6 @@ if __name__ == "__main__":
             'MYSQL_DB': "local_db_tc_params",
             'MYSQL_PORT': os.getenv('DB_PORT')
         }
+    print(f"Configuration: {config}")
     mysqlapi = EcommerceDataTC(config=config)
     mysqlapi.run(debug=True)
